@@ -1,0 +1,29 @@
+{
+  "name": "taller2-media-server",
+  "version": "1.0.0",
+  "description": "\nThis is a media server that allows to interact with image and video files through a database in firebase",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crpistillo/taller2-media-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crpistillo/taller2-media-server/issues"
+  },
+  "homepage": "https://github.com/crpistillo/taller2-media-server#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^4.0.4",
+    "firebase-admin": "^8.12.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
