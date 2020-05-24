@@ -1,6 +1,6 @@
 # taller2-media-server
 
-Master: [![Build Status](https://travis-ci.com/github/crpistillo/taller2-media-server.svg?branch=master)](https://travis-ci.com/github/crpistillo/taller2-media-server.svg?branch=master)
+Master: [![Build Status](https://travis-ci.com/crpistillo/taller2-media-server.svg?token=5SNAVenGembV79qjWNx8&branch=master)](https://travis-ci.com/github/crpistillo/taller2-media-server)
 
 
 ## Para correr la app
