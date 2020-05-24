@@ -1,5 +1,8 @@
 # taller2-media-server
 
+Master: [![Build Status](https://travis-ci.com/github/crpistillo/taller2-media-server.svg?branch=master)](https://travis-ci.com/github/crpistillo/taller2-media-server.svg?branch=master)
+
+
 ## Para correr la app
 
 Para correr la app con nodemon:
