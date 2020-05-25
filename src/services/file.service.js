@@ -1,32 +1,51 @@
 bucket = require('../services/firebase.service');
-const filename = 'prueba.png';
 
 const options = {
-    destination: 'new-image.png',
+    //destination: 'new-image.png',
     resumable: true,
     validation: 'crc32c'
 };
 
 class FileService{
     constructor() {
-    }
 
-    /*
-    Uploads a file to the firebase storage
-     */
-    //TODO: Generalizar para cualquier archivo (esta con uno de prueba)
-    upload_file = (res) => {
-        bucket.upload(filename.toString(), options, function(err, file) {
-            if(err){
-                console.log('There was an error uploading the file ' + filename.toString());
-            }
-            else {
-                console.log('The file ' + filename.toString() + ' was successfully uploaded');
-            }
-        });
-        res.send("Uploaded file");
+        /*
+        Uploads a file from RAM to the firebase storage
+         */
+        this.upload_file = (file_name) => {
+            return new Promise((resolve, reject) => {
+                this.validate_file(file_name)
+                    .then(() => {
+                        bucket.upload(file_name.toString(), options, function(err, file) {
+                             if(err){
+                                 console.log('There was an error uploading the file ' + filename.toString());
+                             }
+                             else {
+                                 console.log('The file ' + file_name.toString() + ' was successfully uploaded');
+                             }
+                         })
+                        resolve(file_name);
+                    })
+                    .catch(function (err) {
+                        reject(err);
+                    })
+            });
+        }
+
+        //TODO: Fijarse si tiene una extensión válida
+        this.validate_file = (file_name) => {
+
+            return new Promise((resolve, reject) => {
+                if (!file_name){
+                    reject('File name was not provided');
+                } else {
+                    resolve();
+                }
+            });
+        }
     }
 }
+
 
 module.exports = new FileService();
 

@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 });
 
 //TODO: cambiar ruta (esta es de prueba)
-router.get('/upload_file', (req, res) => {
+router.post('/upload_file', (req, res) => {
     file_controller.upload_file(req, res);
 });
 
