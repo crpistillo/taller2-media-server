@@ -24,13 +24,20 @@ class FileService{
                                  console.log('The file ' + file_name.toString() + ' was successfully uploaded');
                              }
                          })
-                        resolve(file_name);
+                        resolve(get_metadata(file_name));
                     })
                     .catch(function (err) {
                         reject(err);
                     })
             });
         }
+
+        async function get_metadata(file_name) {
+            const [metadata] = await
+                bucket.file(file_name.toString()).getMetadata();
+                return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated }
+        }
+
 
         //TODO: Fijarse si tiene una extensión válida
         this.validate_file = (file_name) => {

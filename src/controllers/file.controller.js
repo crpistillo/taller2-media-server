@@ -14,7 +14,7 @@ class FileController{
         //TODO: Cambiar para mandar los datos url de donde se ve el archivo
         this.upload_file = (req, res, next) => {
             file_service.upload_file(req.body.file)
-                .then(() => response_service.success(req, res, next))
+                .then((metadata) => response_service.success(res, next, metadata))
                 .catch(() => console.log('Error ocurred'));
         }
     }

@@ -1,13 +1,10 @@
 class ResponseService {
     constructor() {
 
-        //TODO: Que devuelva el tamaño y la fecha en la metadata. Tambien url
-        this.success = (req, res, next) => {
-            var data = {};
-            //data["metadata"] =
-            data['file'] = req.body.file;
+        //TODO: Que devuelva tambien el url
+        this.success = (res, next, metadata) => {
             res.status(200);
-            res.json(data);
+            res.json(metadata);
             //next();
         };
     }
