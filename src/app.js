@@ -1,5 +1,5 @@
 const express = require('express');
-const body_parser = require('body-parser');
+const bodyParser = require('body-parser');
 const path = require('path');
 const morgan = require('morgan');
 
@@ -11,7 +11,7 @@ app.set('port', process.env.PORT || 3000);
 // Middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended: true}));
-app.use(body_parser.json({ type: 'application/json', limit: '50mb' }));
+app.use(bodyParser.json({ type: 'application/json', limit: '50mb' }));
 
 // Routes
 app.use(require('./routes/index'));

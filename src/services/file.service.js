@@ -19,19 +19,19 @@ class FileService{
         /*
         Uploads a file from RAM to the firebase storage
          */
-        this.upload_file = (file_name) => {
+        this.uploadFile = (fileName) => {
             return new Promise((resolve, reject) => {
-                this.validate_file(file_name)
+                this.validateFile(fileName)
                     .then(() => {
-                        bucket.upload(file_name.toString(), options, function(err, file) {
+                        bucket.upload(fileName.toString(), options, function(err, file) {
                              if(err){
-                                 console.log('There was an error uploading the file ' + filename.toString());
+                                 console.log('There was an error uploading the file ' + fileName.toString());
                              }
                              else {
-                                 console.log('The file ' + file_name.toString() + ' was successfully uploaded');
+                                 console.log('The file ' + fileName.toString() + ' was successfully uploaded');
                              }
                          })
-                        resolve(get_metadata(file_name));
+                        resolve(getMetadata(fileName));
                     })
                     .catch(function (err) {
                         reject(err);
@@ -40,21 +40,21 @@ class FileService{
         }
 
         //TODO: Manejar excepciones
-        async function get_metadata(file_name) {
+        async function getMetadata(fileName) {
             const [metadata] = await
-                bucket.file(file_name.toString()).getMetadata();
+                bucket.file(fileName.toString()).getMetadata();
 
             //TODO: Arreglar como se muestra en json
-            const url = generate_signed_url(file_name);
+            const url = generateSignedUrl(fileName);
             return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
         }
 
 
         //TODO: Fijarse si tiene una extensión válida
-        this.validate_file = (file_name) => {
+        this.validateFile = (fileName) => {
 
             return new Promise((resolve, reject) => {
-                if (!file_name){
+                if (!fileName){
                     reject('File name was not provided');
                 } else {
                     resolve();
@@ -64,7 +64,7 @@ class FileService{
 
         //TODO: Manejar excepciones
         //TODO: admitir videos
-        async function generate_signed_url(file_name) {
+        async function generateSignedUrl(fileName) {
             // These options will allow temporary read access to the file
             const options = {
                 version: 'v2', // defaults to 'v2' if missing.
@@ -73,7 +73,7 @@ class FileService{
             };
 
             // Get a v2 signed URL for the file
-            const [url] = await bucket.file(file_name).getSignedUrl(options);
+            const [url] = await bucket.file(fileName).getSignedUrl(options);
 
             console.log(url);
 
