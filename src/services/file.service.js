@@ -3,7 +3,14 @@ bucket = require('../services/firebase.service');
 const options = {
     //destination: 'new-image.png',
     resumable: true,
-    validation: 'crc32c'
+    validation: 'crc32c',
+    //TODO: Cambiar, esto es de prueba
+    metadata: {
+        metadata: {
+            info: 'Metadata de prueba'
+        }
+    }
+
 };
 
 class FileService{
