@@ -12,8 +12,8 @@ class FileController{
         //TODO: Manejar excepciones y errores
 
         //TODO: Cambiar para mandar los datos url de donde se ve el archivo
-        this.uploadFile = (req, res, next) => {
-            fileService.uploadFile(req.body.file)
+        this.uploadVideo = (req, res, next) => {
+            fileService.uploadVideo(req.body.file)
                 .then((metadata) => responseService.success(res, next, metadata))
                 .catch(() => console.log('Error ocurred'));
         }

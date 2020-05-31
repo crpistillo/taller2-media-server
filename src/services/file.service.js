@@ -19,7 +19,7 @@ class FileService{
         /*
         Uploads a file from RAM to the firebase storage
          */
-        this.uploadFile = (fileName) => {
+        this.uploadVideo = (fileName) => {
             return new Promise((resolve, reject) => {
                 this.validateFile(fileName)
                     .then(() => {
@@ -63,7 +63,7 @@ class FileService{
         }
 
         //TODO: Manejar excepciones
-        //TODO: admitir videos
+
         async function generateSignedUrl(fileName) {
             // These options will allow temporary read access to the file
             const options = {
@@ -80,7 +80,6 @@ class FileService{
             return url;
 
         }
-
     }
 }
 

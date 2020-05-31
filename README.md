@@ -14,4 +14,9 @@ npm run dev
 * Permite reiniciar el servidor cada vez que se guarda un archivo o se haga un cambio
 * Ejecuta el script configurado en package.json: nodemon src/index.js
 
+Configurar la variable de entorno GOOGLE_APPLICATION_CREDENTIALS con la ruta del archivo JSON que contiene la clave de la cuenta de servicio:
+
+```
+export GOOGLE_APPLICATION_CREDENTIALS="service-account-file.json"
+```
 

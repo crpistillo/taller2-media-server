@@ -1,11 +1,9 @@
 const admin = require('firebase-admin');
 
-const serviceAccount = require("../../service-account-file.json");
-
 const bucketName = 'chotuve-5d909.appspot.com';
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.applicationDefault(),
     storageBucket: bucketName //TODO: usar variable de enotnrno
 });
 

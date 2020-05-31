@@ -9,9 +9,8 @@ router.get('/', (req, res) => {
     res.send('Media Server\n');
 });
 
-//TODO: cambiar ruta (esta es de prueba)
-router.post('/uploadFile', (req, res) => {
-    fileController.uploadFile(req, res);
+router.post('/uploadVideo', (req, res) => {
+    fileController.uploadVideo(req, res);
 });
 
 module.exports = router;
