@@ -1,37 +1,39 @@
 bucket = require('../services/firebase.service');
 
 const options = {
-    //destination: 'new-image.png',
     resumable: true,
     validation: 'crc32c',
+    contentType: 'video/mp4',
     //TODO: Cambiar, esto es de prueba
     metadata: {
         metadata: {
             info: 'Metadata de prueba'
         }
     }
-
 };
 
 class FileService{
     constructor() {
-
         /*
-        Uploads a file from RAM to the firebase storage
+        Receives a video throw a multipart/formData and uploads it to Firebase Storage
+        :param file: the file object of the video to upload
+        :return: the metadata of the uploaded video
          */
-        this.uploadVideo = (fileName) => {
+        this.uploadVideo = (file) => {
+            options['destination'] = file.name;
             return new Promise((resolve, reject) => {
-                this.validateFile(fileName)
+                this.validateFile(file.name)
                     .then(() => {
-                        bucket.upload(fileName.toString(), options, function(err, file) {
+                        bucket.upload(file.path, options, function(err, file) {
                              if(err){
-                                 console.log('There was an error uploading the file ' + fileName.toString());
+                                 console.log(err);
+                                 console.log('There was an error uploading the file ' + file.name);
                              }
                              else {
-                                 console.log('The file ' + fileName.toString() + ' was successfully uploaded');
+                                 console.log('The file ' + file.name + ' was successfully uploaded');
                              }
                          })
-                        resolve(getMetadata(fileName));
+                        resolve(generateMetadata(file.name));
                     })
                     .catch(function (err) {
                         reject(err);
@@ -39,17 +41,25 @@ class FileService{
             });
         }
 
+        /*
+        Generates de metadata of the uploaded video by reading the file in the Firebase Storage
+        :param fileName: the name of the video file from which the metadata will be generated
+        :return: the name, size, updated, url of the uploaded video
+         */
         //TODO: Manejar excepciones
-        async function getMetadata(fileName) {
-            const [metadata] = await
-                bucket.file(fileName.toString()).getMetadata();
+        async function generateMetadata(fileName) {
+            const [metadata] = await bucket.file(fileName).getMetadata();
+            const url = await generateSignedUrl(fileName);
 
-            //TODO: Arreglar como se muestra en json
-            const url = generateSignedUrl(fileName);
             return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
         }
 
 
+        /*
+        Validates the name of the file to be uploaded
+        :param fileName: the name of the video file to be validated
+        :return: a reject if the fileName is not valid
+         */
         //TODO: Fijarse si tiene una extensión válida
         this.validateFile = (fileName) => {
 
@@ -64,6 +74,11 @@ class FileService{
 
         //TODO: Manejar excepciones
 
+        /*
+        Generates a Signed Url to visualize the uploaded video by reading the file in the Firebase Storage
+        :param fileName: the name of the video file from wich the url will be generated
+        :return: a signed url containing the video visualization
+         */
         async function generateSignedUrl(fileName) {
             // These options will allow temporary read access to the file
             const options = {
@@ -74,15 +89,10 @@ class FileService{
 
             // Get a v2 signed URL for the file
             const [url] = await bucket.file(fileName).getSignedUrl(options);
-
-            console.log(url);
-
             return url;
-
         }
     }
 }
-
 
 module.exports = new FileService();
 
