@@ -94,6 +94,23 @@ class FileService{
             }
         }
 
+        this.deleteVideo = (fields) => {
+            return new Promise((resolve, reject) => {
+                deleteBucket(this.createPath(fields))
+                    .then(() => {
+                        console.log("Successfully deleted");
+                        resolve();
+                    })
+                    .catch((err) => {
+                        console.log("Err");
+                        reject(err);
+                    })
+            });
+        }
+        async function deleteBucket(fileName) {
+            await bucket.file(fileName).delete();
+        }
+
 
     }
 }

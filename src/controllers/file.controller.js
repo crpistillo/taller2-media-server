@@ -16,7 +16,7 @@ class FileController{
         //TODO: Manejar excepciones y errores
 
         this.uploadVideo = (req, res) => {
-            if(!req.headers['content-type'].startsWith('multipart/form-data'))
+            if(!isMultipart(req))
                 responseService.notMultipart(res);
 
             var form = new formidable.IncomingForm();
@@ -25,18 +25,47 @@ class FileController{
                     console.error(err.message);
                 }
                 //res.end(util.inspect({fields: fields, files: files}));
-                if(!hasAllFields(files, fields))
+                if(!hasAllUploadFields(files, fields))
                     responseService.missingField(res);
 
                 fileService.uploadVideo(files['file'], fields)
-                    .then((metadata) => responseService.success(res, metadata))
+                    .then((metadata) => responseService.successOnUpload(res, metadata))
                     .catch((message) => responseService.uploadError(res, message));
 
             });
         }
 
-        function hasAllFields(files, fields) {
+        function hasAllUploadFields(files, fields) {
             return (MANDATORY_FILE in files && MANDATORY_FIELDS.every(item => fields.hasOwnProperty(item)));
+        }
+
+        function isMultipart(req) {
+            return req.headers['content-type'].startsWith('multipart/form-data')
+        }
+
+        this.deleteVideo = (req, res) => {
+
+            if(!isMultipart(req))
+                responseService.notMultipart(res);
+
+            var form = new formidable.IncomingForm();
+            form.parse(req, function(err, fields, files) {
+                if (err) {
+                    console.error(err.message);
+                }
+                //res.end(util.inspect({fields: fields, files: files}));
+                if(!hasAllDeleteFields(fields))
+                    responseService.missingField(res);
+
+                fileService.deleteVideo(fields)
+                    .then(() => responseService.successOnDelete(res, fields['title']))
+                    .catch(() => responseService.deleteError(res));
+
+            });
+        }
+
+        function hasAllDeleteFields(fields){
+            return MANDATORY_FIELDS.every(item => fields.hasOwnProperty(item));
         }
 
 
