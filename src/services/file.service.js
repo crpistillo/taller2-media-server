@@ -32,7 +32,7 @@ class FileService{
                     bucket.upload(file.path, options)
                         .then(() => {
                             console.log('The video "' + fields.title + '" was successfully uploaded');
-                            resolve(generateMetadata(file.name));
+                            resolve(generateMetadata(this.createPath(fields)));
                         })
                         .catch((err) => reject(err) );
                 }
@@ -84,8 +84,9 @@ class FileService{
 
             // Get a v2 signed URL for the file
             const [url] = await bucket.file(fileName).getSignedUrl(options);
-            return url;
+            return url.toString().substring(0, url.toString().indexOf('?GoogleAccessId'));
         }
+
 
         this.updateOptions = (options, fields) => {
             options['destination'] = this.createPath(fields);
@@ -94,15 +95,15 @@ class FileService{
             }
         }
 
-        this.deleteVideo = (fields) => {
+        this.deleteVideo = (query) => {
             return new Promise((resolve, reject) => {
-                deleteBucket(this.createPath(fields))
+                deleteBucket(this.createPath(query))
                     .then(() => {
                         console.log("Successfully deleted");
                         resolve();
                     })
                     .catch((err) => {
-                        console.log("Err");
+                        console.log("Error ocurred");
                         reject(err);
                     })
             });
@@ -111,6 +112,55 @@ class FileService{
             await bucket.file(fileName).delete();
         }
 
+        this.getVideosByUser = (user) => {
+            return new Promise((resolve, reject) => {
+                listVideosByUser(user)
+                    .then((videos) => {
+                        generateMetadataByUser(videos)
+                            .then((metadata) => resolve(metadata))
+                            .catch((err) => reject(err))
+                    })
+                    .catch((err)=> reject(err))
+            });}
+/*
+        async function getMetadataByUser(videos) {
+            const metadata = await generateMetadataByUser(videos);
+            return metadata;
+        }
+*/
+        async function generateMetadataByUser(videos) {
+            const metadata = [];
+            for(let i=0;i<videos.length;i++)
+            {
+                const m = await generateMetadata(videos[i].name)
+                metadata.push(m)
+            }
+            return metadata;
+        }
+
+
+        async function listVideosByUser(user) {
+            const options = {
+                prefix: user,
+                autoPaginate: true,
+            };
+
+            // Lists files in the bucket, filtered by a prefix
+            const [videos] = await bucket.getFiles(options);
+            return videos;
+        }
+
+
+        async function listAllVideos() {
+            // Lists files in the bucket
+            const [videos] = await bucket.getFiles();
+
+            return videos;
+            /*
+            files.forEach(file => {
+                console.log(file.name);
+            });*/
+        }
 
     }
 }

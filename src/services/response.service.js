@@ -34,6 +34,22 @@ class ResponseService {
             res.send(util.format(messages.ERROR_JSON, messages.NON_EXISTING_FILE_ERROR))
         }
 
+        this.notJson = (res) => {
+            res.status(400);
+            res.send(util.format(messages.ERROR_JSON, messages.REQUEST_IS_NOT_JSON));
+        }
+
+        this.successOnGetVideosByUser = (res, videos, user) => {
+            res.status(200);
+            res.send(util.format(messages.USER_VIDEO_LIST, user, JSON.stringify(videos)));
+
+        }
+
+        this.getVideosByUserError = (res) => {
+            res.status(400);
+            res.send(util.format(messages.ERROR_JSON, messages.USER_HAS_NO_VIDEOS));
+        }
+
     }
 }
 

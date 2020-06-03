@@ -5,6 +5,7 @@ var formidable = require('formidable');
 
 const MANDATORY_FILE = 'file';
 const MANDATORY_FIELDS = ['email', 'title'];
+const MANDATORY_FIELDS_VIDEOS_PER_USER = 'email';
 
 class FileController{
     constructor() {
@@ -40,32 +41,39 @@ class FileController{
         }
 
         function isMultipart(req) {
-            return req.headers['content-type'].startsWith('multipart/form-data')
+            return req.headers['content-type'].startsWith('multipart/form-data');
+        }
+
+        function isJson(req){
+            return req.headers['content-type'].startsWith('application/json');
         }
 
         this.deleteVideo = (req, res) => {
 
-            if(!isMultipart(req))
-                responseService.notMultipart(res);
+            if(!hasAllDeleteFields(req.query))
+                responseService.missingField(res);
 
-            var form = new formidable.IncomingForm();
-            form.parse(req, function(err, fields, files) {
-                if (err) {
-                    console.error(err.message);
-                }
-                //res.end(util.inspect({fields: fields, files: files}));
-                if(!hasAllDeleteFields(fields))
-                    responseService.missingField(res);
+            fileService.deleteVideo(req.query)
+                .then(() => responseService.successOnDelete(res, req.query.title))
+                .catch(() => responseService.deleteError(res));
 
-                fileService.deleteVideo(fields)
-                    .then(() => responseService.successOnDelete(res, fields['title']))
-                    .catch(() => responseService.deleteError(res));
-
-            });
         }
 
-        function hasAllDeleteFields(fields){
-            return MANDATORY_FIELDS.every(item => fields.hasOwnProperty(item));
+        function hasAllDeleteFields(query){
+            return MANDATORY_FIELDS.every(item => query.hasOwnProperty(item));
+        }
+
+        this.getVideosByUser= (req, res) => {
+            if(!hasAllGetVideosPerUserFields(req.query))
+                responseService.missingField(res);
+
+            fileService.getVideosByUser(req.query.email)
+                .then((videos) => responseService.successOnGetVideosByUser(res, videos, req.query.email))
+                .catch(() => responseService.getVideosByUserError(res));
+        }
+
+        function hasAllGetVideosPerUserFields(query){
+            return MANDATORY_FIELDS_VIDEOS_PER_USER in query;
         }
 
 
