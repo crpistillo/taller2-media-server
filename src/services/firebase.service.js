@@ -1,10 +1,10 @@
 const admin = require('firebase-admin');
 
-const bucketName = 'chotuve-5d909.appspot.com';
+const bucketName = process.env.BUCKET_NAME;
 
 admin.initializeApp({
-    credential: admin.credential.applicationDefault(),
-    storageBucket: bucketName //TODO: usar variable de enotnrno
+    credential: admin.credential.cert(process.env.CREDENTIALS),
+    storageBucket: bucketName
 });
 
 var bucket = admin.storage().bucket(bucketName);
