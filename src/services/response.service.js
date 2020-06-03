@@ -9,16 +9,19 @@ class ResponseService {
             res.json(metadata);
         };
 
-        this.notMultipart = (res) =>
-        {
+        this.notMultipart = (res) => {
             res.status(400);
             res.send(util.format(messages.ERROR_JSON, messages.REQUEST_IS_NOT_MULTIPART));
         }
 
-        this.missingField = (res) =>
-        {
+        this.missingField = (res) => {
             res.status(400);
             res.send(util.format(messages.ERROR_JSON, messages.MISSING_FIELDS_ERROR));
+        }
+
+        this.uploadError = (res, message) => {
+            res.status(400);
+            res.send(util.format(messages.ERROR_JSON, util.format(messages.ERROR_UPLOADING, message)));
         }
     }
 }

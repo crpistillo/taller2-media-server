@@ -3,7 +3,8 @@ var responseService = require('../services/response.service');
 var formidable = require('formidable');
 //util = require('util');
 
-const MANDATORY_FIELDS = 'file';
+const MANDATORY_FILE = 'file';
+const MANDATORY_FIELDS = ['email', 'title'];
 
 class FileController{
     constructor() {
@@ -23,17 +24,22 @@ class FileController{
                 if (err) {
                     console.error(err.message);
                 }
-
                 //res.end(util.inspect({fields: fields, files: files}));
-                if(!(MANDATORY_FIELDS in files))
+                if(!hasAllFields(files, fields))
                     responseService.missingField(res);
 
-                fileService.uploadVideo(files['file'])
+                fileService.uploadVideo(files['file'], fields)
                     .then((metadata) => responseService.success(res, metadata))
-                    .catch(() => console.log('Error ocurred'));
+                    .catch((message) => responseService.uploadError(res, message));
 
             });
         }
+
+        function hasAllFields(files, fields) {
+            return (MANDATORY_FILE in files && MANDATORY_FIELDS.every(item => fields.hasOwnProperty(item)));
+        }
+
+
     }
 }
 
