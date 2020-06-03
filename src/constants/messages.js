@@ -9,6 +9,8 @@ module.exports = Object.freeze({
     SUCCESS_ON_DELETE: "The video under the title '%s' was successfully deleted",
     NON_EXISTING_FILE_ERROR: "The video to be deleted does not exist",
     USER_HAS_NO_VIDEOS: "The user you are looking for does not have videos uploaded.",
-    USER_VIDEO_LIST: '{"user": "%s" , "videos": %s}'
+    USER_VIDEO_LIST: '{"user": "%s" , "videos": %s}',
+    ERROR_IN_USER_METADATA: "There was an error while generating the user's metadata list",
+    ERROR_IN_USER_VIDEO_LIST: "There was an error while generating the user's video list"
 });
 

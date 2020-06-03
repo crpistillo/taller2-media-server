@@ -29,14 +29,9 @@ class ResponseService {
             res.send(util.format(messages.SUCCESS_JSON, util.format(messages.SUCCESS_ON_DELETE, fileName)))
         }
 
-        this.deleteError = (res) => {
+        this.deleteError = (res, message) => {
             res.status(400);
-            res.send(util.format(messages.ERROR_JSON, messages.NON_EXISTING_FILE_ERROR))
-        }
-
-        this.notJson = (res) => {
-            res.status(400);
-            res.send(util.format(messages.ERROR_JSON, messages.REQUEST_IS_NOT_JSON));
+            res.send(util.format(messages.ERROR_JSON, message))
         }
 
         this.successOnGetVideosByUser = (res, videos, user) => {

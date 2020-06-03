@@ -1,7 +1,7 @@
 bucket = require('../services/firebase.service');
 var messages = require('../constants/messages');
 
-const options = {
+const uploadOptions = {
     resumable: true,
     validation: 'crc32c',
     contentType: 'video/mp4',
@@ -20,16 +20,15 @@ class FileService{
         /*
         Receives a video throw a multipart/formData and uploads it to Firebase Storage
         :param file: the file object of the video to upload
-        :return: the metadata of the uploaded video
+        :return: a promise with the metadata of the uploaded video
          */
         this.uploadVideo = (file, fields) => {
             return new Promise((resolve, reject) => {
-                this.updateOptions(options, fields);
-
+                this.updateOptions(uploadOptions, fields);
                 if(!this.validFile(file.name))
                     reject(messages.INVALID_FILE_NAME_OR_EXTENSION);
                 else{
-                    bucket.upload(file.path, options)
+                    bucket.upload(file.path, uploadOptions)
                         .then(() => {
                             console.log('The video "' + fields.title + '" was successfully uploaded');
                             resolve(generateMetadata(this.createPath(fields)));
@@ -44,7 +43,6 @@ class FileService{
         :param fileName: the name of the video file from which the metadata will be generated
         :return: the name, size, updated, url of the uploaded video
          */
-        //TODO: Manejar excepciones
         async function generateMetadata(fileName) {
             const [metadata] = await bucket.file(fileName).getMetadata()
             const url = await generateSignedUrl(fileName);
@@ -52,6 +50,11 @@ class FileService{
             return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
         }
 
+        /*
+        Creates the path needed to access the bucket
+        :param fields: the fields of the multipart/form-data request
+        :return: the bucket name
+         */
         this.createPath = (fields) => {
             return fields['email'] + '/' + fields['title'];
         }
@@ -65,8 +68,6 @@ class FileService{
         this.validFile = (fileName) => {
             return (fileName.substr(-4)==VALID_EXTENSION);
         }
-
-        //TODO: Manejar excepciones
 
         /*
         Generates a Signed Url to visualize the uploaded video by reading the file in the Firebase Storage
@@ -87,7 +88,12 @@ class FileService{
             return url.toString().substring(0, url.toString().indexOf('?GoogleAccessId'));
         }
 
-
+        /*
+        Updates the options with wich the video will be uploaded based on the
+        received fields
+        :param options: the options to be updated
+        :param fields: the fields that may contain the description and destination
+         */
         this.updateOptions = (options, fields) => {
             options['destination'] = this.createPath(fields);
             if(DESCRIPTION_FIELD in fields){
@@ -95,39 +101,53 @@ class FileService{
             }
         }
 
+        /*
+        Deletes the video from the Firebase storage
+        :param query: the query containing the required fields to delete the video
+        :return: A promise with an error message if an error has occurred
+         */
+        //TODO: arreglar retorno
         this.deleteVideo = (query) => {
             return new Promise((resolve, reject) => {
                 deleteBucket(this.createPath(query))
                     .then(() => {
-                        console.log("Successfully deleted");
                         resolve();
                     })
-                    .catch((err) => {
-                        console.log("Error ocurred");
-                        reject(err);
+                    .catch(() => {
+                        reject(messages.NON_EXISTING_FILE_ERROR);
                     })
             });
         }
+
+        /*
+        Deletes the bucket containing de name of the video 'fileName'
+        :param fileName: the name of the bucket
+         */
         async function deleteBucket(fileName) {
             await bucket.file(fileName).delete();
         }
 
+        /*
+        Lists all the metadata of the videos uploaded by the user
+        :param user: the user
+        :return: a promise with the metadata list
+         */
         this.getVideosByUser = (user) => {
             return new Promise((resolve, reject) => {
                 listVideosByUser(user)
                     .then((videos) => {
                         generateMetadataByUser(videos)
                             .then((metadata) => resolve(metadata))
-                            .catch((err) => reject(err))
+                            .catch(() => reject(messages.ERROR_IN_USER_METADATA))
                     })
-                    .catch((err)=> reject(err))
+                    .catch(()=> reject(messages.ERROR_IN_USER_VIDEO_LIST))
             });}
-/*
-        async function getMetadataByUser(videos) {
-            const metadata = await generateMetadataByUser(videos);
-            return metadata;
-        }
-*/
+
+        /*
+        Generates the metadata for every video in the list given
+        :param videos: the list containing the video-files of the user requested
+        :return: a promise with the list containing the all the video-metadata of the user
+         */
         async function generateMetadataByUser(videos) {
             const metadata = [];
             for(let i=0;i<videos.length;i++)
@@ -138,14 +158,17 @@ class FileService{
             return metadata;
         }
 
-
+        /*
+        Lists all the video-files in the bucket filtered by the user-prefix
+        :param user: the prefix with which the videos will be filtered
+        :return: a promise with the list containing all the video-files uploaded by the user
+         */
         async function listVideosByUser(user) {
             const options = {
                 prefix: user,
                 autoPaginate: true,
             };
 
-            // Lists files in the bucket, filtered by a prefix
             const [videos] = await bucket.getFiles(options);
             return videos;
         }
