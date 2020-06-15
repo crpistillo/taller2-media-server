@@ -25,7 +25,7 @@ class FileController{
                     responseService.missingField(res);
 
                 fileService.uploadVideo(files['file'], fields)
-                    .then((metadata) => responseService.successOnUpload(res, metadata))
+                    .then((metadata) => responseService.successOnUpload(res, metadata, fields['title']))
                     .catch((message) => responseService.uploadError(res, message));
             });
         }

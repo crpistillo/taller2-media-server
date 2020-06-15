@@ -30,7 +30,6 @@ class FileService{
                 else{
                     bucket.upload(file.path, uploadOptions)
                         .then(() => {
-                            console.log('The video "' + fields.title + '" was successfully uploaded');
                             resolve(generateMetadata(this.createPath(fields)));
                         })
                         .catch((err) => reject(err) );
@@ -109,10 +108,7 @@ class FileService{
         this.deleteVideo = (query) => {
             return new Promise((resolve, reject) => {
                 deleteBucket(this.createPath(query))
-                    .then(() => {
-                        console.log('The video "' + query.title + '" was successfully deleted');
-                        resolve();
-                    })
+                    .then(() => resolve())
                     .catch(() => {
                         reject(messages.NON_EXISTING_FILE_ERROR);
                     })
