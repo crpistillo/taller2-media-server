@@ -42,7 +42,7 @@ class FileController{
 
             fileService.deleteVideo(req.query)
                 .then(() => responseService.successOnDelete(res, req.query.title))
-                .catch(() => responseService.deleteError(res, message));
+                .catch((message) => responseService.deleteError(res, message));
 
         }
 
