@@ -1,0 +1,179 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Chotuve Media Server",
+    "description": "The media server of Chotuve",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Carolina Pistillo",
+      "email": "cpistillo@fi.uba.ar"
+    }
+  },
+  "tags": [
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3000/",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/videos": {
+      "post": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Creates a new video",
+        "description": "By passing in the appropriate options, you can upload a new video to the system",
+        "operationId": "uploadVideo",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Video Created",
+            "content": {
+              "apllication/json": {
+                "schema": {
+                  "$ref": "#/definitions/Video"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Deletes a video",
+        "description": "By passing in the appropriate options, you can delete a video from the system",
+        "operationId": "deleteVideo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Email"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "The title of the video",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Video Deleted"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Video Not Found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Searches videos from a user",
+        "description": "By passing in the appropriate options, you can search all the videos uploaded by a user",
+        "operationId": "searchVideosByUser",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results match criteria",
+            "content": {
+              "apllication/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "string"
+                    },
+                    "videos": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Video"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Email": {
+        "name": "email",
+        "in": "query",
+        "description": "The email of the user",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Video": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
