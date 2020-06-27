@@ -6,6 +6,7 @@ module.exports = Object.freeze({
     MISSING_FIELDS_ERROR: "Missing fields in form",
     INVALID_FILE_NAME_OR_EXTENSION: "The file name or extension is not valid",
     ERROR_UPLOADING: "An error has ocurred while uploading the file: %s",
+    SUCCESS_ON_UPLOAD: "The video under the title '%s' was successfully uploaded",
     SUCCESS_ON_DELETE: "The video under the title '%s' was successfully deleted",
     NON_EXISTING_FILE_ERROR: "The video to be deleted does not exist",
     USER_HAS_NO_VIDEOS: "The user you are looking for does not have videos uploaded.",

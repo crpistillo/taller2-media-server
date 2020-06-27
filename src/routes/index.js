@@ -8,15 +8,15 @@ router.get('/', (req, res) => {
     res.send('Media Server\n');
 });
 
-router.post('/uploadVideo', (req, res) => {
+router.post('/videos', (req, res) => {
     fileController.uploadVideo(req, res);
 });
 
-router.delete('/deleteVideo', (req, res) => {
+router.delete('/videos', (req, res) => {
    fileController.deleteVideo(req, res);
 });
 
-router.get('/videosByUser', (req, res) => {
+router.get('/videos', (req, res) => {
     fileController.getVideosByUser(req, res);
 });
 

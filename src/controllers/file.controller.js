@@ -6,10 +6,10 @@ var requestController = require('../controllers/request.controller')
 
 class FileController{
     constructor() {
-        /*
-        Handles the uploadVideo request
-        :param req: the multipart/form-data request
-        :param res: the response
+        /**
+         * Handles the uploadVideo request
+         * @param{express.Request} req - the multipart/form-data request
+         * @param{express.Response} res - the response
          */
         this.uploadVideo = (req, res) => {
             if(!requestController.isMultipart(req))
@@ -25,15 +25,15 @@ class FileController{
                     responseService.missingField(res);
 
                 fileService.uploadVideo(files['file'], fields)
-                    .then((metadata) => responseService.successOnUpload(res, metadata))
+                    .then((metadata) => responseService.successOnUpload(res, metadata, fields['title']))
                     .catch((message) => responseService.uploadError(res, message));
             });
         }
 
-        /*
-        Handles the deleteVideo request
-        :param req: the request
-        :param res: the response
+        /**
+         * Handles the deleteVideo request
+         * @param{express.Request} req - the request
+         * @param{express.Response} res - the response
          */
         this.deleteVideo = (req, res) => {
 
@@ -42,14 +42,14 @@ class FileController{
 
             fileService.deleteVideo(req.query)
                 .then(() => responseService.successOnDelete(res, req.query.title))
-                .catch(() => responseService.deleteError(res, message));
+                .catch((message) => responseService.deleteError(res, message));
 
         }
 
-        /*
-        Handles the videosByUser request
-        :param req: the request
-        :param res: the response
+        /**
+         * Handles the videosByUser request
+         * @param{express.Request} req - the request
+         * @param{express.Response} res - the response
          */
         this.getVideosByUser= (req, res) => {
             if(!requestController.hasAllGetVideosByUserFields(req.query))
