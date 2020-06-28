@@ -30,6 +30,7 @@ describe('fileService', function() {
             sinon.stub(bucket, "getMetadata").returns(Promise.resolve(aMetadata));
             sinon.stub(bucket, "file").withArgs(fileService.createPath(fields)).returns(Promise.resolve("OK"));
             sinon.stub(bucket, "getSignedUrl").returns(Promise.resolve(urlWithCredential));
+
             //sinon.stub(bucket, "generateSignedUrl").withArgs(fileService.createPath(fields)).returns(Promise.resolve("https://chotuve-5d909.appspot.com.storage.googleapis.com/caropistilo%40gmail.com/Video%20de%20prueba"));
         });
 

@@ -3,3 +3,7 @@ node_js:
   - "10.20.1"
 install: npm install
 script: npm test
+
+env:
+  - BUCKET_NAME=bucketTest
+  - CREDENTIALS=credentialsTest
