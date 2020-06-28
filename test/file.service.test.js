@@ -6,6 +6,7 @@ require('dotenv').config();
 const fileService = require('../src/services/file.service');
 const serializedFile = require('../src/serialized/serializedFile');
 const bucket = require('../src/services/firebase.service');
+const admin = require('firebase-admin');
 
 const serializedMetadata = require('../src/serialized/serializedMetadata');
 const aMetadata = new serializedMetadata("caropistilo@gmail.com/Video de prueba", "1074291", "2020-06-27T21:49:36.597Z");
@@ -24,6 +25,7 @@ const urlWithCredential = "https://chotuve-5d909.appspot.com.storage.googleapis.
 describe('fileService', function() {
     describe('uploadVideo', function () {
         beforeEach(function () {
+            sinon.stub(admin, 'initializeApp').returns("OK");
             sinon.stub(bucket, 'upload').withArgs(aFile.path).returns(Promise.resolve("OK"));
             sinon.stub(bucket, "getMetadata").returns(Promise.resolve(aMetadata));
             sinon.stub(bucket, "file").withArgs(fileService.createPath(fields)).returns(Promise.resolve("OK"));
@@ -32,6 +34,7 @@ describe('fileService', function() {
         });
 
         afterEach(function () {
+            admin.initializeApp.restore();
             bucket.upload.restore();
             bucket.getMetadata.restore();
             bucket.file.restore();
