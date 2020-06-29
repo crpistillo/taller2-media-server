@@ -1,33 +1,14 @@
 const chai = require('chai');
-const jest = require('jest');
 chai.use(require('chai-as-promised'));
 const expect = chai.expect;
 const sinon = require('sinon');
 require('dotenv').config();
-const serializedFile = require('../src/serialized/serializedFile');
+
 const firebaseService = require('../src/services/firebase.service');
 const fileService = require('../src/services/file.service');
 const bucket = firebaseService.bucket();
-const test = require('firebase-functions-test')();
-const admin = require('firebase-admin');
+const mock = require('../src/constants/testConstants');
 
-const serializedMetadata = require('../src/serialized/serializedMetadata');
-const aMetadata = new serializedMetadata("caropistilo@gmail.com/Video de prueba", "1074291", "2020-06-27T21:49:36.597Z");
-
-
-
-const metadata = {
-    "file": 'caropistilo@gmail.com/Video de prueba',
-    "size": '1074291',
-    "updated": '2020-06-29T06:47:48.276Z',
-    "url": 'https://chotuve-5d909.appspot.com.storage.googleapis.com/caropistilo%40gmail.com/Video%20de%20prueba'
-}
-
-
-const fields = { email: 'caropistilo@gmail.com', title: 'Video de prueba' };
-const aFile = new serializedFile("prueba.mp4", "/tmp/upload_f8b9568cfd66e68eead2d24df41e98a3");
-const urlWithCredential = "https://chotuve-5d909.appspot.com.storage.googleapis.com/caropistilo%40gmail.com/Video%20de%20prueba%205?GoogleAccessId=CREDENTIALS"
-const url = "https://chotuve-5d909.appspot.com.storage.googleapis.com/caropistilo%40gmail.com/Video%20de%20prueba";
 
 
 describe('fileService', function() {
@@ -85,7 +66,7 @@ describe('fileService', function() {
     describe('generateSignedUrl', function () {
 
         beforeEach(function () {
-            sinon.stub(bucket, 'getSignedUrl').returns(Promise.resolve(urlWithCredential));
+            sinon.stub(bucket, 'getSignedUrl').returns(Promise.resolve(mock.URL_WITH_CREDENTIAL));
         })
 
         afterEach(function () {
@@ -94,15 +75,15 @@ describe('fileService', function() {
 
         it('bucket getSignedUrl returns urlWithCredentials', function () {
             bucket.getSignedUrl().then(function (result) {
-                expect(result).to.equal(urlWithCredential);
+                expect(result).to.equal(mock.URL_WITH_CREDENTIAL);
             }).catch(function (err) {
                 console.log(err);
             })
         })
 
         it('generatesSignedUrl returns url', function () {
-            fileService.generateSignedUrl(fileService.createPath(fields)).then(function (result) {
-                expect(result).to.equal(url);
+            fileService.generateSignedUrl(fileService.createPath(mock.FIELDS)).then(function (result) {
+                expect(result).to.equal(mock.URL);
             }).catch(function (err) {
                 console.log(err);
             })
@@ -111,7 +92,7 @@ describe('fileService', function() {
 
     describe('generateMetadata', function () {
         beforeEach(function () {
-            const getMetadataStub = sinon.stub(bucket, "getMetadata").resolves(aMetadata);
+            const getMetadataStub = sinon.stub(bucket, "getMetadata").resolves(mock.SERIALIZED_METADATA);
             const getSignedUrlStub = sinon.stub(bucket, "getSignedUrl").resolves("url");
             sinon.stub(bucket, 'file').value({getMetadata: getMetadataStub, getSignedUrl: getSignedUrlStub});
         })
@@ -124,18 +105,15 @@ describe('fileService', function() {
 
         it('bucket getMetadata returns aMetadata', function () {
             bucket.getMetadata().then(function (result) {
-                expect(result).to.equal(aMetadata);;
+                expect(result).to.equal(mock.SERIALIZED_METADATA);
             }).catch(function (err) {
                 console.log(err);
             })
         })
 /*
-        it('generatesMetadata returns metadata', function() {
-            fileService.generateMetadata(fileService.createPath(fields)).then(function (result) {
-                console.log(result);
-            }).catch(function (err) {
-                console.log(err);
-            })
+        it('generatesMetadata returns metadata', async () => {
+            let res = await fileService.generateMetadata(fileService.createPath(mock.FIELDS));
+            console.log(res);
         })*/
     })
 
@@ -153,20 +131,55 @@ describe('fileService', function() {
     describe('deleteVideo', function () {
 
         beforeEach(function () {
-            sinon.stub(bucket, 'delete').returns(Promise.resolve("OK"))
+            sinon.stub(bucket, 'delete').returns(Promise.resolve(mock.SUCCESS))
         })
 
         afterEach(function () {
             bucket.delete.restore();
         })
 
-        it('bucket delete returns OK', function () {
+        it('bucket delete returns SUCCESS', function () {
             bucket.delete().then(function (result) {
-                expect(result).to.equal("OK");;
+                expect(result).to.equal(mock.SUCCESS);
             }).catch(function (err) {
                 console.log(err);
             })
         })
+
+        //todo: DELETEBUCKET
+
+
+    })
+
+    describe('listVideosByUser', function () {
+
+        let videos = [];
+        videos.push(mock.SERIALIZED_VIDEO_A);
+        videos.push(mock.SERIALIZED_VIDEO_B);
+
+
+        beforeEach(function () {
+            sinon.stub(bucket, 'getFiles').returns(Promise.resolve(videos))
+        })
+
+        afterEach(function () {
+            bucket.getFiles.restore();
+        })
+
+        it('bucket getFiles returns SUCCESS', function () {
+            bucket.getFiles(mock.LIST_OPTIONS).then(function (result) {
+                expect(result).to.equal(videos);
+            }).catch(function (err) {
+                console.log(err);
+            })
+        })
+/*
+        it('listVideosByUser returns ', async () => {
+
+            let res = await fileService.listVideosByUser(mock.USER);
+            expect(res).to.equal(videos);
+
+        })*/
     })
 })
 
