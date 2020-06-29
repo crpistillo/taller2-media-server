@@ -5,5 +5,5 @@ install: npm install
 script: npm test
 
 env:
-  - BUCKET_NAME="bucketTest"
-  - CREDENTIALS="credentialsTest"
+  - BUCKET_NAME=chotuve-5d909.appspot.com
+  - CREDENTIALS=travis.json

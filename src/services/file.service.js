@@ -1,4 +1,7 @@
-bucket = require('../services/firebase.service');
+const firebaseService = require('../services/firebase.service');
+firebaseService.initialize();
+const bucket = firebaseService.bucket();
+
 var messages = require('../constants/messages');
 
 const uploadOptions = {
@@ -30,7 +33,7 @@ class FileService{
                 else{
                     bucket.upload(file.path, uploadOptions)
                         .then(() => {
-                            resolve(generateMetadata(this.createPath(fields)));
+                            resolve(this.generateMetadata(this.createPath(fields)));
                         })
                         .catch((err) => reject(err) );
                 }
@@ -42,10 +45,9 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
-        async function generateMetadata(fileName) {
+        this.generateMetadata = async(fileName) => {
             const [metadata] = await bucket.file(fileName).getMetadata()
-            const url = await generateSignedUrl(fileName);
-
+            const url = await this.generateSignedUrl(fileName);
             return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
         }
 
@@ -73,7 +75,7 @@ class FileService{
          * @param{string} fileName - the name of the video file from wich the url will be generated
          * @return{Object} - a signed url containing the video visualization
          */
-        async function generateSignedUrl(fileName) {
+        this.generateSignedUrl = async (fileName) => {
             // These options will allow temporary read access to the file
             const options = {
                 version: 'v2', // defaults to 'v2' if missing.
@@ -107,7 +109,7 @@ class FileService{
          */
         this.deleteVideo = (query) => {
             return new Promise((resolve, reject) => {
-                deleteBucket(this.createPath(query))
+                this.deleteBucket(this.createPath(query))
                     .then(() => resolve())
                     .catch(() => {
                         reject(messages.NON_EXISTING_FILE_ERROR);
@@ -119,7 +121,7 @@ class FileService{
          * Deletes the bucket containing de name of the video 'fileName'
          * @param{string} fileName - the name of the bucket
          */
-        async function deleteBucket(fileName) {
+        this.deleteBucket = async(fileName) => {
             await bucket.file(fileName).delete();
         }
 
@@ -130,9 +132,9 @@ class FileService{
          */
         this.getVideosByUser = (user) => {
             return new Promise((resolve, reject) => {
-                listVideosByUser(user)
+                this.listVideosByUser(user)
                     .then((videos) => {
-                        generateMetadataByUser(videos)
+                        this.generateMetadataByUser(videos)
                             .then((metadata) => resolve(metadata))
                             .catch(() => reject(messages.ERROR_IN_USER_METADATA))
                     })
@@ -144,11 +146,11 @@ class FileService{
          * @param{Array} videos - the list containing the video-files of the user requested
          * @return{Promise} - a promise with the list containing the all the video-metadata of the user
          */
-        async function generateMetadataByUser(videos) {
+        this.generateMetadataByUser = async(videos) => {
             const metadata = [];
             for(let i=0;i<videos.length;i++)
             {
-                const m = await generateMetadata(videos[i].name)
+                const m = await this.generateMetadata(videos[i].name)
                 metadata.push(m)
             }
             return metadata;
@@ -159,7 +161,7 @@ class FileService{
          * @param user{string} - the prefix with which the videos will be filtered
          * @return{Promise} - a promise with the list containing all the video-files uploaded by the user
          */
-        async function listVideosByUser(user) {
+        this.listVideosByUser = async(user) => {
             const options = {
                 prefix: user,
                 autoPaginate: true,
@@ -167,18 +169,6 @@ class FileService{
 
             const [videos] = await bucket.getFiles(options);
             return videos;
-        }
-
-
-        async function listAllVideos() {
-            // Lists files in the bucket
-            const [videos] = await bucket.getFiles();
-
-            return videos;
-            /*
-            files.forEach(file => {
-                console.log(file.name);
-            });*/
         }
 
     }
