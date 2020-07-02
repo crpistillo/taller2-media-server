@@ -1,6 +1,8 @@
 bucket = require('../services/firebase.service');
 var messages = require('../constants/messages');
 
+const bucketName = process.env.BUCKET_NAME;
+
 const uploadOptions = {
     resumable: true,
     validation: 'crc32c',
@@ -44,9 +46,8 @@ class FileService{
          */
         async function generateMetadata(fileName) {
             const [metadata] = await bucket.file(fileName).getMetadata()
-            const url = await generateSignedUrl(fileName);
 
-            return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
+            return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
         }
 
         /**
