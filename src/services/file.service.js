@@ -1,4 +1,7 @@
-bucket = require('../services/firebase.service');
+const firebaseService = require('../services/firebase.service');
+firebaseService.initialize();
+const bucket = firebaseService.bucket();
+
 var messages = require('../constants/messages');
 
 const bucketName = process.env.BUCKET_NAME;
@@ -21,7 +24,8 @@ class FileService{
     constructor() {
         /**
          * Receives a video throw a multipart/formData and uploads it to Firebase Storage
-         * @param{formidable.file} file - the file object of the video to upload
+         * @param{object} file - the file object of the video to upload
+         * @param{object} fields - the fields containing the user email and the video title
          * @return{Promise} - a promise with the metadata of the uploaded video
          */
         this.uploadVideo = (file, fields) => {
@@ -32,7 +36,7 @@ class FileService{
                 else{
                     bucket.upload(file.path, uploadOptions)
                         .then(() => {
-                            resolve(generateMetadata(this.createPath(fields)));
+                            resolve(this.generateMetadata(this.createPath(fields)));
                         })
                         .catch((err) => reject(err) );
                 }
@@ -44,10 +48,16 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
+<<<<<<< HEAD
         async function generateMetadata(fileName) {
             const [metadata] = await bucket.file(fileName).getMetadata()
 
             return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
+=======
+        this.generateMetadata = async(fileName) => {
+            const url = await this.generateSignedUrl(fileName);
+            return {'file': fileName, 'url': url};
+>>>>>>> origin/testing
         }
 
         /**
@@ -74,7 +84,7 @@ class FileService{
          * @param{string} fileName - the name of the video file from wich the url will be generated
          * @return{Object} - a signed url containing the video visualization
          */
-        async function generateSignedUrl(fileName) {
+        this.generateSignedUrl = async (fileName) => {
             // These options will allow temporary read access to the file
             const options = {
                 version: 'v2', // defaults to 'v2' if missing.
@@ -103,12 +113,12 @@ class FileService{
 
         /**
          * Deletes the video from the Firebase storage
-         * @param{express.Request.query} query: the query containing the required fields to delete the video
+         * @param{object} query: the query containing the required fields to delete the video
          * @return{Promise}: A promise with an error message if an error has occurred
          */
         this.deleteVideo = (query) => {
             return new Promise((resolve, reject) => {
-                deleteBucket(this.createPath(query))
+                this.deleteBucket(this.createPath(query))
                     .then(() => resolve())
                     .catch(() => {
                         reject(messages.NON_EXISTING_FILE_ERROR);
@@ -120,7 +130,7 @@ class FileService{
          * Deletes the bucket containing de name of the video 'fileName'
          * @param{string} fileName - the name of the bucket
          */
-        async function deleteBucket(fileName) {
+        this.deleteBucket = async(fileName) => {
             await bucket.file(fileName).delete();
         }
 
@@ -131,9 +141,9 @@ class FileService{
          */
         this.getVideosByUser = (user) => {
             return new Promise((resolve, reject) => {
-                listVideosByUser(user)
+                this.listVideosByUser(user)
                     .then((videos) => {
-                        generateMetadataByUser(videos)
+                        this.generateMetadataByUser(videos)
                             .then((metadata) => resolve(metadata))
                             .catch(() => reject(messages.ERROR_IN_USER_METADATA))
                     })
@@ -145,11 +155,11 @@ class FileService{
          * @param{Array} videos - the list containing the video-files of the user requested
          * @return{Promise} - a promise with the list containing the all the video-metadata of the user
          */
-        async function generateMetadataByUser(videos) {
+        this.generateMetadataByUser = async(videos) => {
             const metadata = [];
             for(let i=0;i<videos.length;i++)
             {
-                const m = await generateMetadata(videos[i].name)
+                const m = await this.generateMetadata(videos[i].name)
                 metadata.push(m)
             }
             return metadata;
@@ -160,7 +170,7 @@ class FileService{
          * @param user{string} - the prefix with which the videos will be filtered
          * @return{Promise} - a promise with the list containing all the video-files uploaded by the user
          */
-        async function listVideosByUser(user) {
+        this.listVideosByUser = async(user) => {
             const options = {
                 prefix: user,
                 autoPaginate: true,
@@ -168,18 +178,6 @@ class FileService{
 
             const [videos] = await bucket.getFiles(options);
             return videos;
-        }
-
-
-        async function listAllVideos() {
-            // Lists files in the bucket
-            const [videos] = await bucket.getFiles();
-
-            return videos;
-            /*
-            files.forEach(file => {
-                console.log(file.name);
-            });*/
         }
 
     }
