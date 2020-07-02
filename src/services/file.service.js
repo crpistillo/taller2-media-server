@@ -48,16 +48,9 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
-<<<<<<< HEAD
-        async function generateMetadata(fileName) {
-            const [metadata] = await bucket.file(fileName).getMetadata()
-
-            return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
-=======
         this.generateMetadata = async(fileName) => {
             const url = await this.generateSignedUrl(fileName);
-            return {'file': fileName, 'url': url};
->>>>>>> origin/testing
+            return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
         }
 
         /**
