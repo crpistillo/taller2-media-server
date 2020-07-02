@@ -4,6 +4,8 @@ const bucket = firebaseService.bucket();
 
 var messages = require('../constants/messages');
 
+const bucketName = process.env.BUCKET_NAME;
+
 const uploadOptions = {
     resumable: true,
     validation: 'crc32c',
@@ -46,9 +48,8 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
-        this.generateMetadata = async(fileName) => {
-            const url = await this.generateSignedUrl(fileName);
-            return {'file': fileName, 'url': url};
+        this.generateMetadata = (fileName) => {
+            return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucketName+'/'+fileName};
         }
 
         /**
