@@ -22,7 +22,8 @@ class FileService{
     constructor() {
         /**
          * Receives a video throw a multipart/formData and uploads it to Firebase Storage
-         * @param{formidable.file} file - the file object of the video to upload
+         * @param{object} file - the file object of the video to upload
+         * @param{object} fields - the fields containing the user email and the video title
          * @return{Promise} - a promise with the metadata of the uploaded video
          */
         this.uploadVideo = (file, fields) => {
@@ -46,9 +47,8 @@ class FileService{
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
         this.generateMetadata = async(fileName) => {
-            const [metadata] = await bucket.file(fileName).getMetadata()
             const url = await this.generateSignedUrl(fileName);
-            return {'file': metadata.name, 'size': metadata.size, 'updated': metadata.updated , 'url': url};
+            return {'file': fileName, 'url': url};
         }
 
         /**
@@ -104,7 +104,7 @@ class FileService{
 
         /**
          * Deletes the video from the Firebase storage
-         * @param{express.Request.query} query: the query containing the required fields to delete the video
+         * @param{object} query: the query containing the required fields to delete the video
          * @return{Promise}: A promise with an error message if an error has occurred
          */
         this.deleteVideo = (query) => {
