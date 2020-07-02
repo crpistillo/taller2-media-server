@@ -49,7 +49,6 @@ class FileService{
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
         this.generateMetadata = async(fileName) => {
-            const url = await this.generateSignedUrl(fileName);
             return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
         }
 
