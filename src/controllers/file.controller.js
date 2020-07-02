@@ -51,7 +51,7 @@ class FileController{
          * @param{express.Request} req - the request
          * @param{express.Response} res - the response
          */
-        this.getVideosByUser= (req, res) => {
+        this.getVideosByUser = (req, res) => {
             if(!requestController.hasAllGetVideosByUserFields(req.query))
                 responseService.missingField(res);
 
