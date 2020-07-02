@@ -46,15 +46,15 @@ class FileService{
         /**
          * Generates de metadata of the uploaded video by reading the file in the Firebase Storage
          * @param{string} fileName - the name of the video file from which the metadata will be generated
-         * @return{JSON} - the name, size, updated, url of the uploaded video
+         * @return{JSON} - the name and the url of the uploaded video
          */
         this.generateMetadata = (fileName) => {
-            return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucketName+'/'+fileName};
+            return {'file': fileName, 'url': this.generateUrl(fileName)};
         }
 
         /**
          * Creates the path needed to access the bucket
-         * @param{formidable.fields} - fields: the fields of the multipart/form-data request
+         * @param{object} fields - the fields of the multipart/form-data request
          * @return{string} - the bucket name
          */
         this.createPath = (fields) => {
@@ -76,25 +76,15 @@ class FileService{
          * @param{string} fileName - the name of the video file from wich the url will be generated
          * @return{Object} - a signed url containing the video visualization
          */
-        this.generateSignedUrl = async (fileName) => {
-            // These options will allow temporary read access to the file
-            const options = {
-                version: 'v2', // defaults to 'v2' if missing.
-                action: 'read',
-                expires: Date.now() + 1000 * 60 * 60, // one hour
-                virtualHostedStyle: true
-            };
-
-            // Get a v2 signed URL for the file
-            const [url] = await bucket.file(fileName).getSignedUrl(options);
-            return url.toString().substring(0, url.toString().indexOf('?GoogleAccessId'));
+        this.generateUrl = (fileName) => {
+            return 'https://storage.googleapis.com/'+ bucketName +'/'+ fileName;
         }
 
         /**
          * Updates the options with wich the video will be uploaded based on the
          * received fields
          * @param{const} options - the options to be updated
-         * @param{formidable.fields} - fields: the fields that may contain the description and destination
+         * @param{object} fields - the fields that may contain the description and destination
          */
         this.updateOptions = (options, fields) => {
             options['destination'] = this.createPath(fields);
@@ -135,9 +125,7 @@ class FileService{
             return new Promise((resolve, reject) => {
                 this.listVideosByUser(user)
                     .then((videos) => {
-                        this.generateMetadataByUser(videos)
-                            .then((metadata) => resolve(metadata))
-                            .catch(() => reject(messages.ERROR_IN_USER_METADATA))
+                        resolve(this.generateMetadataByUser(videos))
                     })
                     .catch(()=> reject(messages.ERROR_IN_USER_VIDEO_LIST))
             });}
@@ -147,11 +135,11 @@ class FileService{
          * @param{Array} videos - the list containing the video-files of the user requested
          * @return{Promise} - a promise with the list containing the all the video-metadata of the user
          */
-        this.generateMetadataByUser = async(videos) => {
+        this.generateMetadataByUser = (videos) => {
             const metadata = [];
             for(let i=0;i<videos.length;i++)
             {
-                const m = await this.generateMetadata(videos[i].name)
+                const m = this.generateMetadata(videos[i].name)
                 metadata.push(m)
             }
             return metadata;

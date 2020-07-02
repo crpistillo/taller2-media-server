@@ -16,22 +16,15 @@ describe('fileService', function() {
     describe('generateSignedUrl', function () {
 
         it('generatesSignedUrl returns url', function () {
-            fileService.generateSignedUrl(fileService.createPath(mock.FIELDS)).then(function (result) {
-                expect(result).to.equal(mock.URL);
-            }).catch(function (err) {
-                console.log(err);
-            })
+            let url = fileService.generateUrl(fileService.createPath(mock.FIELDS))
+            expect(url).to.equal(mock.URL);
         })
     })
 
     describe('generateMetadata', function () {
         it('generateMetadata returns metadata', function () {
-            fileService.generateMetadata(fileService.createPath(mock.FIELDS)).then(function (result) {
+            let result = fileService.generateMetadata(fileService.createPath(mock.FIELDS))
                 expect(result).to.eql(mock.METADATA).but.not.equal(mock.METADATA);
-                ;
-            }).catch(function (err) {
-                console.log(err);
-            })
         })
     })
 
@@ -98,6 +91,22 @@ describe('fileService', function() {
                 console.log(err);
             })
         })
+
+        it('listVideosByUser returns ', function () {
+            fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_2)
+                .then(async () => {
+                    await fileService.listVideosByUser(mock.USER_2)
+                        .then((res) => {
+                            let videos = fileService.generateMetadataByUser(res);
+                            fileService.deleteVideo(mock.FIELDS_2);
+                            expect(videos).to.eql(mock.USER_2_VIDEO_LIST).but.not.equal(mock.USER_2_VIDEO_LIST);
+                        })
+
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        })
     })
 
 
@@ -148,31 +157,10 @@ describe('fileService', function() {
         })
     })
 
-    describe('listVideosByUser', function () {
-
-        it('listVideosByUser returns ', function () {
-            fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_2)
-                .then(async() => {
-                    let res = await fileService.listVideosByUser(mock.USER_2);
-                    let videos = await fileService.generateMetadataByUser(res)
-                    .then(()=> {
-                        fileService.deleteVideo(mock.FIELDS_2);
-                        expect(videos).to.eql(mock.USER_2_VIDEO_LIST).but.not.equal(mock.USER_2_VIDEO_LIST);
-                    });
-
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-
-        })
-    })
-
 
 })
 
-/*
-        */
+
 
 
 
