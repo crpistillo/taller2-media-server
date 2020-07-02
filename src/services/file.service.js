@@ -48,8 +48,8 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name, size, updated, url of the uploaded video
          */
-        this.generateMetadata = async(fileName) => {
-            return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucket_name+'/'+file_name};
+        this.generateMetadata = (fileName) => {
+            return {'file': fileName, 'url': 'https://storage.googleapis.com/'+bucketName+'/'+fileName};
         }
 
         /**
