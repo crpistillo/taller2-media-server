@@ -73,7 +73,7 @@ class FileService{
          */
         //TODO: Extender a otros formatos de video soportados
         this.validFile = (fileName) => {
-            return (fileName.substr(-4)==VALID_EXTENSION);
+            return (fileName.substr(-4) == VALID_EXTENSION);
         }
 
         /**
