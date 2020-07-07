@@ -1,16 +1,3 @@
-/*const admin = require('firebase-admin');
-
-const bucketName = process.env.BUCKET_NAME;
-
-admin.initializeApp({
-    credential: admin.credential.cert(process.env.CREDENTIALS),
-    storageBucket: bucketName
-});
-
-var bucket = admin.storage().bucket(bucketName);
-
-module.exports = bucket;*/
-
 const fs = require('fs');
 const admin = require('firebase-admin');
 
@@ -52,7 +39,8 @@ class FirebaseService {
     }
 }
 
-module.exports = new FirebaseService(process.env.CREDENTIALS, process.env.BUCKET_NAME)
-
+if(process.env.TESTING == 'true')
+    module.exports = new FirebaseService(process.env.CREDENTIALS_TEST, process.env.BUCKET_NAME_TEST)
+else module.exports = new FirebaseService(process.env.CREDENTIALS, process.env.BUCKET_NAME)
 
 

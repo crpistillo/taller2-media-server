@@ -3,8 +3,13 @@ firebaseService.initialize();
 const bucket = firebaseService.bucket();
 
 var messages = require('../constants/messages');
+let bucketName;
 
-const bucketName = process.env.BUCKET_NAME;
+if(process.env.TESTING == 'true')
+    bucketName = process.env.BUCKET_NAME_TEST;
+else{
+    bucketName = process.env.BUCKET_NAME;
+}
 
 const uploadOptions = {
     resumable: true,
