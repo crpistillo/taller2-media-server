@@ -165,6 +165,7 @@ describe('fileService', function() {
                     fileService.getVideosByUser(mock.USER_4)
                         .then((videos) => {
                             expect(videos).to.eql(mock.USER_4_VIDEO_LIST).but.not.equal(mock.USER_4_VIDEO_LIST);
+                            fileService.deleteVideo(mock.FIELDS_4);
                         })
                         .catch(function (err) {
                             console.log(err)

@@ -25,6 +25,10 @@ module.exports = Object.freeze({
         file: user_1 + '/' + title_1,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_1 + '/' + title_1,
     },
+    METADATA_2: {
+        file: user_2 + '/' + title_2,
+        url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_2 + '/' + title_2
+    },
     METADATA_3: {
         file: user_3 + '/' + title_3,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_3 + '/' + title_3
