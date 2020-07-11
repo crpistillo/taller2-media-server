@@ -1,15 +1,20 @@
-const firebaseService = require('../services/firebase.service');
-firebaseService.initialize();
-const bucket = firebaseService.bucket();
-
-var messages = require('../constants/messages');
+const fs = require('../services/firebase.service');
+let firebaseService;
 let bucketName;
+var messages = require('../constants/messages');
 
 if(process.env.TESTING == 'true')
+{
     bucketName = process.env.BUCKET_NAME_TEST;
+    firebaseService = new fs(process.env.CREDENTIALS_TEST, bucketName)
+}
 else{
     bucketName = process.env.BUCKET_NAME;
+    firebaseService = new fs(process.env.CREDENTIALS, bucketName)
 }
+
+firebaseService.initialize();
+const bucket = firebaseService.bucket();
 
 const uploadOptions = {
     resumable: true,
@@ -168,4 +173,4 @@ class FileService{
     }
 }
 
-module.exports = new FileService();
+module.exports = FileService

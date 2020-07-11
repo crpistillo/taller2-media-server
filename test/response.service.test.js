@@ -3,8 +3,6 @@ const chai = require('chai');
 const expect = chai.expect;
 const mock = require('../src/constants/testConstants')
 var messages = require('../src/constants/messages');
-var util = require('util');
-
 var mockExpressResponse = require('mock-express-response');
 
 
@@ -48,10 +46,10 @@ describe('ResponseService', function() {
     })
 
     it('successOnDelete', function () {
-        responseService.successOnDelete(res, mock.METADATA_1.file);
+        responseService.successOnDelete(res, mock.TITLE_1);
         expect(res.statusCode).to.eql(200);
         expect(res._getJSON()).to.eql({ status: 'Success',
-            message: "The video under the title '" + mock.METADATA_1.file + "' was successfully deleted"});
+            message: "The video under the title '" + mock.TITLE_1 + "' was successfully deleted"});
     })
 
     it('deleteError', function () {

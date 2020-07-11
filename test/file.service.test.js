@@ -4,14 +4,26 @@ const expect = chai.expect;
 const sinon = require('sinon');
 require('dotenv').config();
 
-const firebaseService = require('../src/services/firebase.service');
-const fileService = require('../src/services/file.service');
-const bucket = firebaseService.bucket();
+const fbs= require('../src/services/firebase.service');
+let firebaseService;
+const fs = require('../src/services/file.service');
+let fileService;
+let bucket;
 const mock = require('../src/constants/testConstants');
 const messages = require('../src/constants/messages');
 
 describe('fileService', function() {
 
+    before(function(){
+        firebaseService = new fbs(process.env.CREDENTIALS_TEST, process.env.BUCKET_NAME_TEST)
+        bucket = firebaseService.bucket();
+        fileService = new fs();
+    })
+
+    after(function () {
+        delete firebaseService;
+        delete fileService;
+    })
     //getSignedUrl funciona sin firebase (offline), genera localmente la url => no la mockeo
     describe('generateSignedUrl', function () {
 

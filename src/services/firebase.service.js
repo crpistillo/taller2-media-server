@@ -39,8 +39,6 @@ class FirebaseService {
     }
 }
 
-if(process.env.TESTING == 'true')
-    module.exports = new FirebaseService(process.env.CREDENTIALS_TEST, process.env.BUCKET_NAME_TEST)
-else module.exports = new FirebaseService(process.env.CREDENTIALS, process.env.BUCKET_NAME)
+module.exports = FirebaseService;
 
 

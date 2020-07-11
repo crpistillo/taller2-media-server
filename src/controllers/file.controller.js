@@ -1,4 +1,5 @@
-var fileService = require('../services/file.service');
+const fs = require('../services/file.service');
+const fileService = new fs();
 var responseService = require('../services/response.service');
 var formidable = require('formidable');
 var requestController = require('../controllers/request.controller')
@@ -62,4 +63,4 @@ class FileController{
     }
 }
 
-module.exports = new FileController();
+module.exports = FileController;

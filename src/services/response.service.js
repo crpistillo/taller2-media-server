@@ -28,22 +28,23 @@ class ResponseService {
 
         this.successOnDelete = (res, fileName) => {
             logger.debug(util.format(messages.SUCCESS_ON_DELETE, fileName));
-            res.status(200).send(util.format(messages.SUCCESS_JSON, util.format(messages.SUCCESS_ON_DELETE, fileName)))
+            res.status(200).send({ status: 'Success',
+                message: "The video under the title '" + fileName + "' was successfully deleted"})
         }
 
         this.deleteError = (res, message) => {
             logger.debug(message);
-            res.status(400).send(util.format(messages.ERROR_JSON, message))
+            res.status(400).send({ status: 'Error', message: message })
         }
 
         this.successOnGetVideosByUser = (res, videos, user) => {
-            res.status(200).send(util.format(messages.USER_VIDEO_LIST, user, JSON.stringify(videos)));
+            res.status(200).send({user: user, videos: videos});
 
         }
 
         this.getVideosByUserError = (res) => {
             logger.debug(messages.USER_HAS_NO_VIDEOS);
-            res.status(400).send(util.format(messages.ERROR_JSON, messages.USER_HAS_NO_VIDEOS));
+            res.status(400).send({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS});
         }
     }
 }
