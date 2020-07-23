@@ -1,4 +1,5 @@
-var fileService = require('../services/file.service');
+const fs = require('../services/file.service');
+const fileService = new fs();
 var responseService = require('../services/response.service');
 var formidable = require('formidable');
 var requestController = require('../controllers/request.controller')
@@ -51,7 +52,7 @@ class FileController{
          * @param{express.Request} req - the request
          * @param{express.Response} res - the response
          */
-        this.getVideosByUser= (req, res) => {
+        this.getVideosByUser = (req, res) => {
             if(!requestController.hasAllGetVideosByUserFields(req.query))
                 responseService.missingField(res);
 
@@ -62,4 +63,4 @@ class FileController{
     }
 }
 
-module.exports = new FileController();
+module.exports = FileController;

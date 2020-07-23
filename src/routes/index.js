@@ -1,6 +1,7 @@
 // The routes to be accessed
 const { Router } = require('express');
-const fileController = require('../controllers/file.controller');
+const fc = require('../controllers/file.controller');
+const fileController = new fc();
 const swaggerUi = require('swagger-ui-express');
 let swaggerDocument = require('../swagger.json');
 const SWAGGER_URL = "/swagger"
@@ -24,6 +25,6 @@ router.get('/videos', (req, res) => {
 });
 
 router.use('/swagger', swaggerUi.serve);
-router.get('/swagger', swaggerUi.setup(swaggerDocument));
+router.get(SWAGGER_URL, swaggerUi.setup(swaggerDocument));
 
 module.exports = router;
