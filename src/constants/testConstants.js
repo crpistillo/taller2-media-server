@@ -1,13 +1,13 @@
 const serializedFile = require('../serialized/serializedFile');
-const serializedVideo = require('../serialized/serializedVideo');
 
 const user_1 = "user1@gmail.com";
 const user_2 = "user2@gmail.com";
 const user_3 = "user3@gmail.com";
 const user_4 = "user4@gmail.com";
 const user_5 = "user5@gmail.com";
-const user_6 = "user6@gmail.com"
-const user_7 = "user7@gmail.com"
+const user_6 = "user6@gmail.com";
+const user_7 = "user7@gmail.com";
+const user_8 = "user8@gmail.com";
 
 const title_1 = "Video test 1";
 const title_2 = "Video test 2";
@@ -17,6 +17,8 @@ const title_5 = "Video test 5";
 const title_6 = "Video test 6";
 const title_7 = "Video test 7";
 
+const size = '1074291';
+
 module.exports = Object.freeze({
     USER_1: user_1,
     USER_2: user_2,
@@ -25,6 +27,7 @@ module.exports = Object.freeze({
     USER_5: user_5,
     USER_6: user_6,
     USER_7: user_7,
+    USER_8: user_8,
 
     TITLE_1: title_1,
     TITLE_5: title_5,
@@ -44,56 +47,48 @@ module.exports = Object.freeze({
 
     METADATA_1: {
         file: user_1 + '/' + title_1,
+        size: size,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_1 + '/' + title_1,
     },
     METADATA_2: {
         file: user_2 + '/' + title_2,
+        size: size,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_2 + '/' + title_2
     },
     METADATA_3: {
         file: user_3 + '/' + title_3,
+        size: size,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_3 + '/' + title_3
+    },
+    METADATA_4: {
+        file: user_4 + '/' + title_4,
+        size: size,
+        url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_4 + '/' + title_4
     },
     METADATA_5: {
         file: user_5 + '/' + title_5,
+        size: size,
         url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_5 + '/' + title_5
     },
-
+    METADATA_7: {
+        file: user_7 + '/' + title_7,
+        size: size,
+        url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_7 + '/' + title_7
+    },
+    USER_2_VIDEO_LIST: [
+        {
+            file: user_2 + '/' + title_2,
+            size: size,
+            url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_2 + '/' + title_2
+        }
+    ],
     URL_1: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_1 + '/' + title_1,
     SERIALIZED_FILE: new serializedFile("prueba.mp4", "test/video_test.mp4"),
     SERIALIZED_BAD_FILE: new serializedFile("prueba.mov", "test/video_test.mp4"),
     SERIALIZED_NON_EXISTENT_FILE: new serializedFile("prueba.mp4", "video.mp4"),
     SUCCESS: "Success",
-    SERIALIZED_VIDEO_A: new serializedVideo(user_1 + '/' + title_1),
-    SERIALIZED_VIDEO_B: new serializedVideo(user_1 + '/Amazonas'),
     LIST_OPTIONS: {
-        prefix: user_1,
+        prefix: user_8,
         autoPaginate: true,
-    },
-    USER_2_VIDEO_LIST: [
-        {
-            file: user_2 + '/' + title_2,
-            url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_2 + '/' + title_2
-        }
-    ],
-    USER_4_VIDEO_LIST: [
-        {
-            file: user_4 + '/' + title_4,
-            url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_4 + '/' + title_4
-        }
-    ],
-    USER_7_VIDEO_LIST_CONTROLLER: {
-        user: user_7,
-        videos: [
-            {
-                file: user_7 + '/' + title_7,
-                url: 'https://storage.googleapis.com/' + process.env.BUCKET_NAME_TEST + '/' + user_7 + '/' + title_7
-            }
-        ]
     }
-
-
-
-
-
 })

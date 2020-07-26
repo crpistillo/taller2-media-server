@@ -4,7 +4,6 @@ const chai = require('chai');
 const expect = chai.expect;
 var mockExpressRequest = require('mock-express-request');
 
-
 describe('RequestController', function() {
 
     it('hasAllUploadFields returns true', function () {

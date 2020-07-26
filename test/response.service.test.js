@@ -5,8 +5,6 @@ const mock = require('../src/constants/testConstants')
 var messages = require('../src/constants/messages');
 var mockExpressResponse = require('mock-express-response');
 
-
-
 describe('ResponseService', function() {
 
     let res;
@@ -62,7 +60,10 @@ describe('ResponseService', function() {
     it('successOnGetVideosByUser', function () {
         responseService.successOnGetVideosByUser(res, mock.USER_2_VIDEO_LIST, mock.USER_2)
         expect(res.statusCode).to.eql(200);
-        expect(res._getJSON()).to.eql({user: mock.USER_2, videos: [mock.METADATA_2]});
+        expect(res._getJSON()['user']).to.eql(mock.USER_2);
+        expect(res._getJSON()['videos'][0]['file']).to.eql(mock.METADATA_2['file']);
+        expect(res._getJSON()['videos'][0]['size']).to.eql(mock.METADATA_2['size']);
+        expect(res._getJSON()['videos'][0]['url']).to.eql(mock.METADATA_2['url']);
     })
 
     it('getVideosByUserError', function () {
@@ -71,6 +72,4 @@ describe('ResponseService', function() {
         expect(res._getJSON()).to.eql({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS}
         );
     })
-
-
 });
