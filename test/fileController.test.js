@@ -31,11 +31,6 @@ describe('fileController', function () {
         fileService = new fs();
     })
 
-    after(function () {
-        delete fileController;
-        delete fileService;
-    })
-
     describe('deleteVideo', function () {
         it('deleteVideo returns "video does not exist"', function () {
             request(app)

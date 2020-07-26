@@ -13,10 +13,6 @@ describe('ResponseService', function() {
         res = new mockExpressResponse();
     })
 
-    afterEach(function () {
-        delete res;
-    })
-
     it('successOnUpload', function () {
 
         responseService.successOnUpload(res, mock.METADATA_1, "title");

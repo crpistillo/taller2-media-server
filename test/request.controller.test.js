@@ -17,13 +17,11 @@ describe('RequestController', function() {
     it('isMultipart returns true', function() {
         req = new mockExpressRequest({ headers: {'content-type': 'multipart/form-data'} });
         expect(requestController.isMultipart(req)).to.be.true;
-        delete req;
     })
 
     it('isMultipart returns false', function() {
         req = new mockExpressRequest();
         expect(requestController.isMultipart(req)).to.be.false;
-        delete req;
     })
 
     it('hasAllDeleteFields returns true', function () {

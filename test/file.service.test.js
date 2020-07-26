@@ -20,11 +20,6 @@ describe('fileService', function() {
         fileService = new fs();
     })
 
-    after(function () {
-        delete firebaseService;
-        delete fileService;
-    })
-
     describe('generateSignedUrl', function () {
 
         it('generatesSignedUrl returns url', function () {
