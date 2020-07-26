@@ -41,7 +41,7 @@ describe('fileController', function () {
             request(app)
                 .delete('/videos')
                 .query({email: mock.USER_5, title: mock.TITLE_5})
-                .expect(400)
+                .expect(404)
                 .expect({
                     status: 'Error',
                     message: messages.NON_EXISTING_FILE_ERROR
@@ -82,7 +82,7 @@ describe('fileController', function () {
                 .field('email', mock.USER_5)
                 .field('title', mock.TITLE_5)
                 .attach('file', 'test/video_test.mp4')
-                .expect(200)
+                .expect(201)
                 .end(function(err, res) {
                     if (err) throw err;
                     expect(res.body['file']).eql(mock.METADATA_5['file']);

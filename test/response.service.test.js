@@ -20,7 +20,7 @@ describe('ResponseService', function() {
     it('successOnUpload', function () {
 
         responseService.successOnUpload(res, mock.METADATA_1, "title");
-        expect(res.statusCode).to.eql(200);
+        expect(res.statusCode).to.eql(201);
         expect(res._getJSON()).to.eql(mock.METADATA_1).but.not.equal(mock.METADATA_1);
     })
 
@@ -53,7 +53,7 @@ describe('ResponseService', function() {
     it('deleteError', function () {
         const message = 'An error occurred';
         responseService.deleteError(res, message);
-        expect(res.statusCode).to.eql(400);
+        expect(res.statusCode).to.eql(404);
         expect(res._getJSON()).to.eql({ status: 'Error', message: message });
     })
 
@@ -68,7 +68,7 @@ describe('ResponseService', function() {
 
     it('getVideosByUserError', function () {
         responseService.getVideosByUserError(res)
-        expect(res.statusCode).to.eql(400);
+        expect(res.statusCode).to.eql(404);
         expect(res._getJSON()).to.eql({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS}
         );
     })

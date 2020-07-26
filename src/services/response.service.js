@@ -1,5 +1,5 @@
-var messages = require('../constants/messages');
-var util = require('util');
+const messages = require('../constants/messages');
+const util = require('util');
 const logger = require('../services/logger');
 
 class ResponseService {
@@ -8,7 +8,7 @@ class ResponseService {
         this.successOnUpload = (res, metadata, fileName) => {
             console.log(util.format(messages.SUCCESS_ON_UPLOAD, fileName))
             logger.debug(util.format(messages.SUCCESS_ON_UPLOAD, fileName))
-            res.status(200)
+            res.status(201)
             res.json(metadata);
         };
 
@@ -40,7 +40,7 @@ class ResponseService {
         this.deleteError = (res, message) => {
             console.log(message);
             logger.debug(message);
-            res.status(400).send({ status: 'Error', message: message })
+            res.status(404).send({ status: 'Error', message: message })
         }
 
         this.successOnGetVideosByUser = (res, videos, user) => {
@@ -50,7 +50,7 @@ class ResponseService {
 
         this.getVideosByUserError = (res) => {
             logger.debug(messages.USER_HAS_NO_VIDEOS);
-            res.status(400).send({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS});
+            res.status(404).send({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS});
         }
     }
 }
