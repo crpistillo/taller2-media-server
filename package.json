@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "test": "nyc mocha",
     "coverage": "nyc --reporter=lcov --reporter-text=lcov --all npm test",
-    "test:coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
