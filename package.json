@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "test": "nyc mocha",
-    "coverage": "nyc --reporter=lcov --reporter-text=lcov --all npm test"
+    "coverage": "nyc --reporter=lcov --reporter-text=lcov --all npm test",
+    "test:coveralls": "nyc --reporter=lcov --reporter-text=lcov --all npm test | coveralls"
   },
   "repository": {
     "type": "git",
