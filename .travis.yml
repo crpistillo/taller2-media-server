@@ -2,8 +2,7 @@ language: node_js
 node_js:
 - 10.20.1
 install: npm install
-script: npm test
-after_success: npm run coveralls
+script: npm run coveralls
 env:
   global:
   - TESTING=true
