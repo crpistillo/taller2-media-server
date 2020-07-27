@@ -6,6 +6,9 @@ const mock = require('../src/constants/testConstants')
 const messages = require('../src/constants/messages')
 const fs = require('../src/services/file.service');
 let fileService;
+const chai = require('chai');
+chai.use(require('chai-as-promised'));
+const expect = chai.expect;
 
 const app = express();
 
@@ -28,17 +31,12 @@ describe('fileController', function () {
         fileService = new fs();
     })
 
-    after(function () {
-        delete fileController;
-        delete fileService;
-    })
-
     describe('deleteVideo', function () {
         it('deleteVideo returns "video does not exist"', function () {
             request(app)
                 .delete('/videos')
                 .query({email: mock.USER_5, title: mock.TITLE_5})
-                .expect(400)
+                .expect(404)
                 .expect({
                     status: 'Error',
                     message: messages.NON_EXISTING_FILE_ERROR
@@ -47,17 +45,7 @@ describe('fileController', function () {
                     if (err) throw err;
                 });
         })
-/*
-        it('deleteVideo returns "missing fields"', function () {
-            request(app)
-                .delete('/videos')
-                .query({email: mock.USER_5})
-                .expect(400)
-                .expect({status:"Error", message: messages.MISSING_FIELDS_ERROR})
-                .end(function(err, res) {
-                    if (err) throw err;
-                });
-        })*/
+
 
         it('deleteVideo returns Success', function () {
             fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_6)
@@ -89,10 +77,12 @@ describe('fileController', function () {
                 .field('email', mock.USER_5)
                 .field('title', mock.TITLE_5)
                 .attach('file', 'test/video_test.mp4')
-                .expect(200)
-                .expect(mock.METADATA_5)
+                .expect(201)
                 .end(function(err, res) {
                     if (err) throw err;
+                    expect(res.body['file']).eql(mock.METADATA_5['file']);
+                    expect(res.body['size']).eql(mock.METADATA_5['size']);
+                    expect(res.body['url']).eql(mock.METADATA_5['url']);
                     fileService.deleteVideo(mock.FIELDS_5);
                 });
         })
@@ -106,9 +96,12 @@ describe('fileController', function () {
                         .get('/videos')
                         .query({email: mock.USER_7})
                         .expect(200)
-                        .expect(mock.USER_7_VIDEO_LIST_CONTROLLER)
                         .end(function(err, res) {
                             if (err) throw err;
+                            expect(res.body['user']).to.eql(mock.USER_7);
+                            expect(res.body['videos'][0]['file']).to.eql(mock.METADATA_7['file']);
+                            expect(res.body['videos'][0]['size']).to.eql(mock.METADATA_7['size']);
+                            expect(res.body['videos'][0]['url']).to.eql(mock.METADATA_7['url']);
                             fileService.deleteVideo(mock.FIELDS_7);
                         });
                 })

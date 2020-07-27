@@ -58,8 +58,9 @@ class FileService{
          * @param{string} fileName - the name of the video file from which the metadata will be generated
          * @return{JSON} - the name and the url of the uploaded video
          */
-        this.generateMetadata = (fileName) => {
-            return {'file': fileName, 'url': this.generateUrl(fileName)};
+        this.generateMetadata = async (fileName) => {
+            const [metadata] = await bucket.file(fileName).getMetadata();
+            return {'file': fileName, 'size': metadata.size, 'updated': metadata.updated, 'url': this.generateUrl(fileName)};
         }
 
         /**
@@ -135,7 +136,9 @@ class FileService{
             return new Promise((resolve, reject) => {
                 this.listVideosByUser(user)
                     .then((videos) => {
-                        resolve(this.generateMetadataByUser(videos))
+                        this.generateMetadataByUser(videos)
+                            .then((metadata) => resolve(metadata))
+                            .catch(() => reject(messages.ERROR_IN_USER_METADATA))
                     })
                     .catch(()=> reject(messages.ERROR_IN_USER_VIDEO_LIST))
             });}
@@ -145,11 +148,11 @@ class FileService{
          * @param{Array} videos - the list containing the video-files of the user requested
          * @return{Promise} - a promise with the list containing the all the video-metadata of the user
          */
-        this.generateMetadataByUser = (videos) => {
+        this.generateMetadataByUser = async(videos) => {
             const metadata = [];
             for(let i=0;i<videos.length;i++)
             {
-                const m = this.generateMetadata(videos[i].name)
+                const m = await this.generateMetadata(videos[i].name)
                 metadata.push(m)
             }
             return metadata;

@@ -4,7 +4,6 @@ const chai = require('chai');
 const expect = chai.expect;
 var mockExpressRequest = require('mock-express-request');
 
-
 describe('RequestController', function() {
 
     it('hasAllUploadFields returns true', function () {
@@ -18,13 +17,11 @@ describe('RequestController', function() {
     it('isMultipart returns true', function() {
         req = new mockExpressRequest({ headers: {'content-type': 'multipart/form-data'} });
         expect(requestController.isMultipart(req)).to.be.true;
-        delete req;
     })
 
     it('isMultipart returns false', function() {
         req = new mockExpressRequest();
         expect(requestController.isMultipart(req)).to.be.false;
-        delete req;
     })
 
     it('hasAllDeleteFields returns true', function () {

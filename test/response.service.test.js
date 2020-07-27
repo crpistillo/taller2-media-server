@@ -5,8 +5,6 @@ const mock = require('../src/constants/testConstants')
 var messages = require('../src/constants/messages');
 var mockExpressResponse = require('mock-express-response');
 
-
-
 describe('ResponseService', function() {
 
     let res;
@@ -15,14 +13,10 @@ describe('ResponseService', function() {
         res = new mockExpressResponse();
     })
 
-    afterEach(function () {
-        delete res;
-    })
-
     it('successOnUpload', function () {
 
         responseService.successOnUpload(res, mock.METADATA_1, "title");
-        expect(res.statusCode).to.eql(200);
+        expect(res.statusCode).to.eql(201);
         expect(res._getJSON()).to.eql(mock.METADATA_1).but.not.equal(mock.METADATA_1);
     })
 
@@ -55,22 +49,23 @@ describe('ResponseService', function() {
     it('deleteError', function () {
         const message = 'An error occurred';
         responseService.deleteError(res, message);
-        expect(res.statusCode).to.eql(400);
+        expect(res.statusCode).to.eql(404);
         expect(res._getJSON()).to.eql({ status: 'Error', message: message });
     })
 
     it('successOnGetVideosByUser', function () {
         responseService.successOnGetVideosByUser(res, mock.USER_2_VIDEO_LIST, mock.USER_2)
         expect(res.statusCode).to.eql(200);
-        expect(res._getJSON()).to.eql({user: mock.USER_2, videos: [mock.METADATA_2]});
+        expect(res._getJSON()['user']).to.eql(mock.USER_2);
+        expect(res._getJSON()['videos'][0]['file']).to.eql(mock.METADATA_2['file']);
+        expect(res._getJSON()['videos'][0]['size']).to.eql(mock.METADATA_2['size']);
+        expect(res._getJSON()['videos'][0]['url']).to.eql(mock.METADATA_2['url']);
     })
 
     it('getVideosByUserError', function () {
         responseService.getVideosByUserError(res)
-        expect(res.statusCode).to.eql(400);
+        expect(res.statusCode).to.eql(404);
         expect(res._getJSON()).to.eql({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS}
         );
     })
-
-
 });

@@ -17,7 +17,7 @@
   ],
   "servers": [
     {
-      "url": "http://localhost:3000/",
+      "url": "https://chotuve-mediaserver.herokuapp.com/",
       "description": "Production server"
     }
   ],
@@ -31,42 +31,49 @@
         "description": "By passing in the appropriate options, you can upload a new video to the system",
         "operationId": "uploadVideo",
         "requestBody": {
+          "required": true,
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "title": {
-                    "type": "string"
-                  },
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  },
-                  "description": {
-                    "type": "string"
-                  }
-                }
+                "$ref": "#/components/schemas/VideoIn"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Video Created",
+            "$ref": "#/components/responses/201VideoCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/400InvalidInput"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Searches all videos",
+        "description": "By passing in the appropriate options, you can search all the videos uploaded by a user",
+        "operationId": "getVideos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search succeeded",
             "content": {
               "apllication/json": {
                 "schema": {
-                  "$ref": "#/definitions/Video"
+                  "$ref": "#/components/schemas/ListOfVideos"
                 }
               }
             }
           },
-          "400": {
-            "description": "Invalid input"
+          "404": {
+            "$ref": "#/components/responses/404VideoNotFound"
           }
         }
       },
@@ -93,52 +100,20 @@
         ],
         "responses": {
           "200": {
-            "description": "Video Deleted"
-          },
-          "400": {
-            "description": "Invalid input"
-          },
-          "404": {
-            "description": "Video Not Found"
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "developers"
-        ],
-        "summary": "Searches videos from a user",
-        "description": "By passing in the appropriate options, you can search all the videos uploaded by a user",
-        "operationId": "searchVideosByUser",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Email"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Search results match criteria",
+            "description": "Video Deleted",
             "content": {
               "apllication/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "user": {
-                      "type": "string"
-                    },
-                    "videos": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/Video"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/Response"
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid input"
+            "$ref": "#/components/responses/400InvalidInput"
+          },
+          "404": {
+            "$ref": "#/components/responses/404VideoNotFound"
           }
         }
       }
@@ -155,23 +130,113 @@
           "type": "string"
         }
       }
-    }
-  },
-  "definitions": {
-    "Video": {
-      "type": "object",
-      "properties": {
-        "file": {
-          "type": "string"
+    },
+    "responses": {
+      "200VideoUpdated": {
+        "description": "Video Updated",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "201VideoCreated": {
+        "description": "Video Created",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "400InvalidInput": {
+        "description": "Invalid input",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Response"
+            }
+          }
+        }
+      },
+      "404VideoNotFound": {
+        "description": "VideoNotFound",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Response"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "VideoIn": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "description": {
+            "type": "string"
+          }
         },
-        "size": {
-          "type": "string"
-        },
-        "updated": {
-          "type": "string"
-        },
-        "url": {
-          "type": "string"
+        "required": [
+          "email",
+          "title",
+          "file"
+        ]
+      },
+      "VideoOut": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "ListOfVideos": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "Response": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
         }
       }
     }

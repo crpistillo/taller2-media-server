@@ -3,7 +3,7 @@ const fileService = new fs();
 var responseService = require('../services/response.service');
 var formidable = require('formidable');
 var requestController = require('../controllers/request.controller')
-//util = require('util');
+util = require('util');
 
 class FileController{
     constructor() {
@@ -25,6 +25,8 @@ class FileController{
                 if(!requestController.hasAllUploadFields(files, fields))
                     responseService.missingField(res);
 
+                console.log(util.format("The video '%s' from user %s is trying to be uploaded", fields['title'], fields['email']));
+
                 fileService.uploadVideo(files['file'], fields)
                     .then((metadata) => responseService.successOnUpload(res, metadata, fields['title']))
                     .catch((message) => responseService.uploadError(res, message));
@@ -41,10 +43,11 @@ class FileController{
             if(!requestController.hasAllDeleteFields(req.query))
                 responseService.missingField(res);
 
+            console.log(util.format("The video '%s' from user %s is trying to be deleted", req.query.title, req.query.email));
+
             fileService.deleteVideo(req.query)
                 .then(() => responseService.successOnDelete(res, req.query.title))
                 .catch((message) => responseService.deleteError(res, message));
-
         }
 
         /**

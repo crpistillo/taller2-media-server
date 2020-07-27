@@ -20,23 +20,11 @@ describe('fileService', function() {
         fileService = new fs();
     })
 
-    after(function () {
-        delete firebaseService;
-        delete fileService;
-    })
-    //getSignedUrl funciona sin firebase (offline), genera localmente la url => no la mockeo
     describe('generateSignedUrl', function () {
 
         it('generatesSignedUrl returns url', function () {
             let url = fileService.generateUrl(fileService.createPath(mock.FIELDS_1))
             expect(url).to.equal(mock.URL_1);
-        })
-    })
-
-    describe('generateMetadata', function () {
-        it('generateMetadata returns metadata', function () {
-            let result = fileService.generateMetadata(fileService.createPath(mock.FIELDS_1))
-                expect(result).to.eql(mock.METADATA_1).but.not.equal(mock.METADATA_1);
         })
     })
 
@@ -76,42 +64,20 @@ describe('fileService', function() {
             })
         })
 
-        //todo: DELETEBUCKET
-
-
     })
 
     describe('listVideosByUser', function () {
-
-        let videos = [];
-        videos.push(mock.SERIALIZED_VIDEO_A);
-        videos.push(mock.SERIALIZED_VIDEO_B);
-
-
-        beforeEach(function () {
-            sinon.stub(bucket, 'getFiles').returns(Promise.resolve(videos))
-        })
-
-        afterEach(function () {
-            bucket.getFiles.restore();
-        })
-
-        it('bucket getFiles returns SUCCESS', function () {
-            bucket.getFiles(mock.LIST_OPTIONS).then(function (result) {
-                expect(result).to.equal(videos);
-            }).catch(function (err) {
-                console.log(err);
-            })
-        })
 
         it('listVideosByUser returns Video List Expected', function () {
             fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_2)
                 .then(async () => {
                     await fileService.listVideosByUser(mock.USER_2)
-                        .then((res) => {
-                            let videos = fileService.generateMetadataByUser(res);
+                        .then(async(res) => {
+                            let videos = await fileService.generateMetadataByUser(res);
                             fileService.deleteVideo(mock.FIELDS_2);
-                            expect(videos).to.eql(mock.USER_2_VIDEO_LIST).but.not.equal(mock.USER_2_VIDEO_LIST);
+                            expect(videos[0]['file']).to.eql(mock.METADATA_2['file']);
+                            expect(videos[0]['size']).to.eql(mock.METADATA_2['size']);
+                            expect(videos[0]['url']).to.eql(mock.METADATA_2['url']);
                         })
 
                 })
@@ -142,7 +108,9 @@ describe('fileService', function() {
         it('uploadVideo returns metadata', function () {
             fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_1)
                 .then((result) => {
-                    expect(result).to.eql(mock.METADATA_1).but.not.equal(mock.METADATA_1);
+                    expect(result['file']).to.eql(mock.METADATA_1['file']);
+                    expect(result['size']).to.eql(mock.METADATA_1['size']);
+                    expect(result['url']).to.eql(mock.METADATA_1['url']);
                     fileService.deleteVideo(mock.FIELDS_1);
                 })
                 .catch(function (err) {
@@ -160,7 +128,9 @@ describe('fileService', function() {
         it('uploadVideo with description returns metadata', function () {
             fileService.uploadVideo(mock.SERIALIZED_FILE, mock.FIELDS_3)
                 .then((result) => {
-                    expect(result).to.eql(mock.METADATA_3).but.not.equal(mock.METADATA_3);
+                    expect(result['file']).to.eql(mock.METADATA_3['file']);
+                    expect(result['size']).to.eql(mock.METADATA_3['size']);
+                    expect(result['url']).to.eql(mock.METADATA_3['url']);
                     fileService.deleteVideo(mock.FIELDS_3);
                 })
                 .catch(function (err) {
@@ -176,7 +146,9 @@ describe('fileService', function() {
                 .then(function () {
                     fileService.getVideosByUser(mock.USER_4)
                         .then((videos) => {
-                            expect(videos).to.eql(mock.USER_4_VIDEO_LIST).but.not.equal(mock.USER_4_VIDEO_LIST);
+                            expect(videos[0]['file']).to.eql(mock.METADATA_4['file']);
+                            expect(videos[0]['size']).to.eql(mock.METADATA_4['size']);
+                            expect(videos[0]['url']).to.eql(mock.METADATA_4['url']);
                             fileService.deleteVideo(mock.FIELDS_4);
                         })
                         .catch(function (err) {
