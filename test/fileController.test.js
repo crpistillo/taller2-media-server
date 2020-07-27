@@ -3,7 +3,6 @@ let fileController;
 const request = require('supertest');
 const express = require('express');
 const mock = require('../src/constants/testConstants')
-const messages = require('../src/constants/messages')
 const fs = require('../src/services/file.service');
 let fileService;
 const chai = require('chai');
@@ -37,11 +36,7 @@ describe('fileController', function () {
                 .delete('/videos')
                 .query({email: mock.USER_5, title: mock.TITLE_5})
                 .expect(404)
-                .expect({
-                    status: 'Error',
-                    message: messages.NON_EXISTING_FILE_ERROR
-                })
-                .end(function(err, res) {
+                .end(function(err) {
                     if (err) throw err;
                 });
         })
@@ -56,14 +51,14 @@ describe('fileController', function () {
                         .expect(200)
                         .expect({
                             status: 'Success',
-                            message: "The video under the title '" + mock.TITLE_6 + "' was successfully deleted"
+                            message: 'The video ' + mock.TITLE_6 + ' from user ' + mock.USER_6 + ' was successfully deleted'
                         })
-                        .end(function(err, res) {
+                        .end(function(err) {
                             if (err) throw err;
                         });
                 })
                 .catch(function (err) {
-                    console.log(err)
+                    console.log(err.message)
                 })
         })
 

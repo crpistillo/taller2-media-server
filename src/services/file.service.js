@@ -27,7 +27,6 @@ const uploadOptions = {
     }
 };
 
-const VALID_EXTENSION = '.mp4';
 const DESCRIPTION_FIELD = 'description';
 
 class FileService{
@@ -41,15 +40,11 @@ class FileService{
         this.uploadVideo = (file, fields) => {
             return new Promise((resolve, reject) => {
                 this.updateOptions(uploadOptions, fields);
-                if(!this.validFile(file.name))
-                    reject(messages.INVALID_FILE_NAME_OR_EXTENSION);
-                else{
-                    bucket.upload(file.path, uploadOptions)
-                        .then(() => {
-                            resolve(this.generateMetadata(this.createPath(fields)));
-                        })
-                        .catch((err) => reject(err) );
-                }
+                bucket.upload(file.path, uploadOptions)
+                    .then(() => {
+                        resolve(this.generateMetadata(this.createPath(fields)));
+                    })
+                    .catch((err) => reject(err.message) );
             });
         }
 
@@ -70,16 +65,6 @@ class FileService{
          */
         this.createPath = (fields) => {
             return fields['email'] + '/' + fields['title'];
-        }
-
-        /**
-         * Validates the name of the file to be uploaded
-         * @param{string} fileName - the name of the video file to be validated
-         * @return{Boolean} - true or false if the file name is valid or not
-         */
-        //TODO: Extender a otros formatos de video soportados
-        this.validFile = (fileName) => {
-            return (fileName.substr(-4) == VALID_EXTENSION);
         }
 
         /**
@@ -114,8 +99,7 @@ class FileService{
                 this.deleteBucket(this.createPath(query))
                     .then(() => resolve())
                     .catch((err) => {
-                        reject(err)
-                        //reject(messages.NON_EXISTING_FILE_ERROR);
+                        reject(err.message);
                     })
             });
         }
