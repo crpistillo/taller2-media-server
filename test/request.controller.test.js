@@ -40,5 +40,16 @@ describe('RequestController', function() {
         expect(requestController.hasAllGetVideosByUserFields(mock.INVALID_FIELDS)).to.be.false;
     })
 
+    describe('validFile', function () {
+
+        it('valid File returns true if the format is valid', function () {
+            chai.assert.equal(requestController.validFile("prueba.mp4"), true);
+        })
+
+        it('valid file returns false if the format is not valid', function () {
+            chai.assert.equal(requestController.validFile("prueba.png"), false)
+        })
+    })
+
 
 })

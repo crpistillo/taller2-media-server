@@ -28,17 +28,6 @@ describe('fileService', function() {
         })
     })
 
-    describe('validFile', function () {
-
-        it('valid File returns true if the format is valid', function () {
-            chai.assert.equal(fileService.validFile("prueba.mp4"), true);
-        })
-
-        it('valid file returns false if the format is not valid', function () {
-            chai.assert.equal(fileService.validFile("prueba.png"), false)
-        })
-    })
-
     describe('deleteVideo', function () {
 
         beforeEach(function () {
@@ -60,7 +49,8 @@ describe('fileService', function() {
         it('deleteVideo with no existing file returns NON_EXISTING_FILE_ERROR', function () {
             fileService.deleteVideo(mock.FIELDS_1)
                 .catch(function (err) {
-                 expect(err).to.equal(messages.NON_EXISTING_FILE_ERROR);
+                 expect(err).to.equal("No such object: " + process.env.BUCKET_NAME_TEST +
+                     '/' + mock.USER_1 + '/' + mock.TITLE_1);
             })
         })
 

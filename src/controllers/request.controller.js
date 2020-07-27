@@ -1,6 +1,7 @@
 const MANDATORY_FILE = 'file';
 const MANDATORY_FIELDS = ['email', 'title'];
 const MANDATORY_FIELDS_VIDEOS_PER_USER = 'email';
+const VALID_EXTENSION = '.mp4';
 
 class RequestController {
     constructor() {
@@ -39,6 +40,15 @@ class RequestController {
          */
         this.hasAllGetVideosByUserFields= (query) => {
             return MANDATORY_FIELDS_VIDEOS_PER_USER in query;
+        }
+
+        /**
+         * Validates the name of the file to be uploaded
+         * @param{string} fileName - the name of the video file to be validated
+         * @return{Boolean} - true or false if the file name is valid or not
+         */
+        this.validFile = (fileName) => {
+            return (fileName.substr(-4) == VALID_EXTENSION);
         }
 
     }
