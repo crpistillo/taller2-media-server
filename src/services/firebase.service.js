@@ -1,15 +1,44 @@
+const fs = require('fs');
 const admin = require('firebase-admin');
 
-const serviceAccount = require("../../media-server-a63df-firebase-adminsdk-33afb-58d3af03f2.json");
+class FirebaseService {
+    /**
+     * Constructor
+     * @param {string} serviceAccount
+     * @param {string} bucketName
+     */
 
-const bucket_name = 'media-server-a63df.appspot.com';
+    constructor(serviceAccount, bucketName) {
 
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://media-server-a63df.firebaseio.com/',
-    storageBucket: bucket_name //TODO: usar variable de enotnrno
-});
+        this.serviceAccount = serviceAccount;
+        this.bucketName = bucketName;
 
-var bucket = admin.storage().bucket(bucket_name);
+        /**
+         * Initialize connection
+         * @returns {firebase.database.Reference}
+         */
 
-module.exports = bucket;
+        this.initialize = () =>  {
+            if (!fs.existsSync(this.serviceAccount) && this.serviceAccount) {
+                this.serviceAccount = JSON.parse(this.serviceAccount);
+            }
+            admin.initializeApp(this.getConfig());
+            admin.auth();
+        }
+
+        this.getConfig = () => {
+            return {
+                credential: admin.credential.cert(this.serviceAccount),
+                storageBucket: this.bucketName
+            };
+        }
+
+        this.bucket = () => {
+            return admin.storage().bucket(this.bucketName);
+        }
+    }
+}
+
+module.exports = FirebaseService;
+
+

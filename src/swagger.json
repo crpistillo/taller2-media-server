@@ -1,0 +1,244 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Chotuve Media Server",
+    "description": "The media server of Chotuve",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Carolina Pistillo",
+      "email": "cpistillo@fi.uba.ar"
+    }
+  },
+  "tags": [
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://chotuve-mediaserver.herokuapp.com/",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/videos": {
+      "post": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Creates a new video",
+        "description": "By passing in the appropriate options, you can upload a new video to the system",
+        "operationId": "uploadVideo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/VideoIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/201VideoCreated"
+          },
+          "400": {
+            "$ref": "#/components/responses/400InvalidInput"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Searches all videos",
+        "description": "By passing in the appropriate options, you can search all the videos uploaded by a user",
+        "operationId": "getVideos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Email"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search succeeded",
+            "content": {
+              "apllication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListOfVideos"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404VideoNotFound"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "Deletes a video",
+        "description": "By passing in the appropriate options, you can delete a video from the system",
+        "operationId": "deleteVideo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Email"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "The title of the video",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Video Deleted",
+            "content": {
+              "apllication/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400InvalidInput"
+          },
+          "404": {
+            "$ref": "#/components/responses/404VideoNotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Email": {
+        "name": "email",
+        "in": "query",
+        "description": "The email of the user",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "200VideoUpdated": {
+        "description": "Video Updated",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "201VideoCreated": {
+        "description": "Video Created",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "400InvalidInput": {
+        "description": "Invalid input",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Response"
+            }
+          }
+        }
+      },
+      "404VideoNotFound": {
+        "description": "VideoNotFound",
+        "content": {
+          "apllication/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Response"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "VideoIn": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "title",
+          "file"
+        ]
+      },
+      "VideoOut": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "updated": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "ListOfVideos": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string"
+          },
+          "videos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VideoOut"
+            }
+          }
+        }
+      },
+      "Response": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

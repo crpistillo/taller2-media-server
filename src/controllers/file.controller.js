@@ -1,24 +1,69 @@
-var file_service = require('../services/file.service');
-var response_service = require('../services/response.service');
+const fs = require('../services/file.service');
+const fileService = new fs();
+var responseService = require('../services/response.service');
+var formidable = require('formidable');
+var requestController = require('../controllers/request.controller')
+util = require('util');
 
 class FileController{
     constructor() {
-
-        /*
-        Handles the upload_file request
-        :param req: the request
-        :param res: the response
+        /**
+         * Handles the uploadVideo request
+         * @param{express.Request} req - the multipart/form-data request
+         * @param{express.Response} res - the response
          */
-        //TODO: Manejar excepciones y errores
+        this.uploadVideo = (req, res) => {
+            if(!requestController.isMultipart(req))
+                responseService.notMultipart(res);
 
-        //TODO: Cambiar para mandar los datos url de donde se ve el archivo
-        this.upload_file = (req, res, next) => {
-            file_service.upload_file(req.body.file)
-                .then((metadata) => response_service.success(res, next, metadata))
-                .catch(() => console.log('Error ocurred'));
+            var form = new formidable.IncomingForm();
+            form.parse(req, function(err, fields, files) {
+                if (err) {
+                    console.error(err.message);
+                }
+                //res.end(util.inspect({fields: fields, files: files}));
+                if(!requestController.hasAllUploadFields(files, fields))
+                    responseService.missingField(res);
+
+                console.log(util.format("The video '%s' from user %s is trying to be uploaded", fields['title'], fields['email']));
+
+                fileService.uploadVideo(files['file'], fields)
+                    .then((metadata) => responseService.successOnUpload(res, metadata, fields['title']))
+                    .catch((message) => responseService.uploadError(res, message));
+            });
+        }
+
+        /**
+         * Handles the deleteVideo request
+         * @param{express.Request} req - the request
+         * @param{express.Response} res - the response
+         */
+        this.deleteVideo = (req, res) => {
+
+            if(!requestController.hasAllDeleteFields(req.query))
+                responseService.missingField(res);
+
+            console.log(util.format("The video '%s' from user %s is trying to be deleted", req.query.title, req.query.email));
+
+            fileService.deleteVideo(req.query)
+                .then(() => responseService.successOnDelete(res, req.query.title))
+                .catch((message) => responseService.deleteError(res, message));
+        }
+
+        /**
+         * Handles the videosByUser request
+         * @param{express.Request} req - the request
+         * @param{express.Response} res - the response
+         */
+        this.getVideosByUser = (req, res) => {
+            if(!requestController.hasAllGetVideosByUserFields(req.query))
+                responseService.missingField(res);
+
+            fileService.getVideosByUser(req.query.email)
+                .then((videos) => responseService.successOnGetVideosByUser(res, videos, req.query.email))
+                .catch(() => responseService.getVideosByUserError(res));
         }
     }
-
 }
 
-module.exports = new FileController();
+module.exports = FileController;

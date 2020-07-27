@@ -1,17 +1,30 @@
 // The routes to be accessed
-
 const { Router } = require('express');
-const router = Router();
+const fc = require('../controllers/file.controller');
+const fileController = new fc();
+const swaggerUi = require('swagger-ui-express');
+let swaggerDocument = require('../swagger.json');
+const SWAGGER_URL = "/swagger"
 
-var file_controller = require('../controllers/file.controller');
+const router = Router();
 
 router.get('/', (req, res) => {
     res.send('Media Server\n');
 });
 
-//TODO: cambiar ruta (esta es de prueba)
-router.post('/upload_file', (req, res) => {
-    file_controller.upload_file(req, res);
+router.post('/videos', (req, res) => {
+    fileController.uploadVideo(req, res);
 });
+
+router.delete('/videos', (req, res) => {
+   fileController.deleteVideo(req, res);
+});
+
+router.get('/videos', (req, res) => {
+    fileController.getVideosByUser(req, res);
+});
+
+router.use('/swagger', swaggerUi.serve);
+router.get(SWAGGER_URL, swaggerUi.setup(swaggerDocument));
 
 module.exports = router;

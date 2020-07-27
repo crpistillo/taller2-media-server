@@ -3,5 +3,12 @@
 
 # Node modules
 .node_modules/
+node_modules/
 
 .idea/*
+
+#Environment variables
+*.env
+
+#Firebase Credentials
+credentials.json
