@@ -113,8 +113,9 @@ class FileService{
             return new Promise((resolve, reject) => {
                 this.deleteBucket(this.createPath(query))
                     .then(() => resolve())
-                    .catch(() => {
-                        reject(messages.NON_EXISTING_FILE_ERROR);
+                    .catch((err) => {
+                        reject(err)
+                        //reject(messages.NON_EXISTING_FILE_ERROR);
                     })
             });
         }
