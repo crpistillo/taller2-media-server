@@ -10,10 +10,12 @@ module.exports = Object.freeze({
     SUCCESS_ON_UPLOAD: "The video '%s' from user %s was successfully uploaded",
     SUCCESS_ON_DELETE: "The video %s from user %s was successfully deleted",
     DELETING_VIDEO: "The video '%s' from user %s is trying to be deleted",
-    ERROR_DELETING: "An error has ocurred while deleting the file: %s",
-    USER_HAS_NO_VIDEOS: "The user you are looking for does not have videos uploaded.",
+    ERROR_DELETING: "An error has occurred while deleting the file: %s",
+    USER_HAS_NO_VIDEOS: "The user %s does not exist or does not have videos uploaded.",
     USER_VIDEO_LIST: '{"user": "%s" , "videos": %s}',
     ERROR_IN_USER_VIDEO_LIST: "There was an error while generating the user's video list",
     ERROR_IN_USER_METADATA: "There was an error while generating the user's metadata list",
+    GETTING_VIDEO: "The videos from user %s are being searched",
+    SUCCESS_ON_GET: "The videos from user %s were successfully found"
 });
 

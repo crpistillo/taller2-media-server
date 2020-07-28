@@ -34,7 +34,7 @@ class FileController{
                     logger.debug(util.format(messages.UPLOADING_VIDEO, fields['title'], fields['email']));
                     fileService.uploadVideo(files['file'], fields)
                         .then((metadata) => responseService.successOnUpload(res, metadata, fields))
-                        .catch((message) => responseService.uploadError(res, message));
+                        .catch((error) => responseService.uploadError(res, error));
                 }
             });
         }
@@ -66,9 +66,17 @@ class FileController{
             if(!requestController.hasAllGetVideosByUserFields(req.query))
                 responseService.missingField(res);
 
-            fileService.getVideosByUser(req.query.email)
-                .then((videos) => responseService.successOnGetVideosByUser(res, videos, req.query.email))
-                .catch(() => responseService.getVideosByUserError(res));
+            else{
+                logger.debug(util.format(messages.GETTING_VIDEO, req.query.email));
+                fileService.getVideosByUser(req.query.email)
+                    .then((videos) => {
+                        if(videos.length != 0)
+                            responseService.successOnGetVideosByUser(res, videos, req.query.email)
+                        else
+                            responseService.nonExistingUserOrVideosError(res, req.query.email)
+                    })
+                    .catch((message) => responseService.getVideosByUserError(res, message));
+            }
         }
     }
 }

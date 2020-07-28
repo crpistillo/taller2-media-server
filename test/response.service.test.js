@@ -33,7 +33,10 @@ describe('ResponseService', function() {
 
     it('uploadError', function () {
         const message = 'An error occurred';
-        responseService.uploadError(res, message);
+        const error = {
+            "message": message
+        }
+        responseService.uploadError(res, error);
         expect(res.statusCode).to.eql(400);
         expect(res._getJSON()).to.eql({ status: 'Error', message: 'An error has ocurred while uploading the file: ' + message});
     })
@@ -46,10 +49,10 @@ describe('ResponseService', function() {
     })
 
     it('deleteError', function () {
-        const message = "An error has ocurred"
+        const message = "An error has occurred";
         responseService.deleteError(res, message);
         expect(res.statusCode).to.eql(404);
-        expect(res._getJSON()).to.eql({ status: 'Error', message: "An error has ocurred while deleting the file: " + message});
+        expect(res._getJSON()).to.eql({ status: 'Error', message: "An error has occurred while deleting the file: " + message});
     })
 
     it('successOnGetVideosByUser', function () {
@@ -62,9 +65,10 @@ describe('ResponseService', function() {
     })
 
     it('getVideosByUserError', function () {
-        responseService.getVideosByUserError(res)
+        const message = "An error has occurred";
+        responseService.getVideosByUserError(res, message)
         expect(res.statusCode).to.eql(404);
-        expect(res._getJSON()).to.eql({ status: 'Error', message: messages.USER_HAS_NO_VIDEOS}
+        expect(res._getJSON()).to.eql({ status: 'Error', message: message}
         );
     })
 });

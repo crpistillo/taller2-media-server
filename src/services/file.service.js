@@ -122,10 +122,12 @@ class FileService{
                 this.listVideosByUser(user)
                     .then((videos) => {
                         this.generateMetadataByUser(videos)
-                            .then((metadata) => resolve(metadata))
+                            .then((metadata) => {
+                                resolve(metadata)
+                            })
                             .catch(() => reject(messages.ERROR_IN_USER_METADATA))
                     })
-                    .catch(()=> reject(messages.ERROR_IN_USER_VIDEO_LIST))
+                    .catch((error)=> reject(error.message))
             });}
 
         /**

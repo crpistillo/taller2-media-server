@@ -8,6 +8,7 @@ const user_5 = "user5@gmail.com";
 const user_6 = "user6@gmail.com";
 const user_7 = "user7@gmail.com";
 const user_8 = "user8@gmail.com";
+const user_9 = "user9@gmail.com";
 
 const title_1 = "Video test 1";
 const title_2 = "Video test 2";
@@ -16,6 +17,7 @@ const title_4 = "Video test 4";
 const title_5 = "Video test 5";
 const title_6 = "Video test 6";
 const title_7 = "Video test 7";
+const title_8 = "Video test 8";
 
 const size = '1074291';
 
@@ -28,10 +30,12 @@ module.exports = Object.freeze({
     USER_6: user_6,
     USER_7: user_7,
     USER_8: user_8,
+    USER_9: user_9,
 
     TITLE_1: title_1,
     TITLE_5: title_5,
     TITLE_6: title_6,
+    TITLE_8: title_8,
 
     VALID_FILES: {file: "prueba.mp4"},
     INVALID_FILES: {},
@@ -43,6 +47,7 @@ module.exports = Object.freeze({
     FIELDS_5: {email: user_5, title: title_5},
     FIELDS_6: {email: user_6, title: title_6},
     FIELDS_7: {email: user_7, title: title_7},
+    FIELDS_8: {email: user_8, title: title_8},
     INVALID_FIELDS: {},
 
     METADATA_1: {
@@ -86,9 +91,5 @@ module.exports = Object.freeze({
     SERIALIZED_FILE: new serializedFile("prueba.mp4", "test/video_test.mp4"),
     SERIALIZED_BAD_FILE: new serializedFile("prueba.mov", "test/video_test.mp4"),
     SERIALIZED_NON_EXISTENT_FILE: new serializedFile("prueba.mp4", "video.mp4"),
-    SUCCESS: "Success",
-    LIST_OPTIONS: {
-        prefix: user_8,
-        autoPaginate: true,
-    }
+    SUCCESS: "Success"
 })
