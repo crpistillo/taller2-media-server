@@ -5,6 +5,7 @@ const fileController = new fc();
 const swaggerUi = require('swagger-ui-express');
 let swaggerDocument = require('../swagger.json');
 const SWAGGER_URL = "/swagger"
+const logger = require('../services/logger');
 
 const router = Router();
 
